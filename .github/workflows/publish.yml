@@ -32,7 +32,6 @@ jobs:
               name=$(echo $component | sed s/.html//)
               echo -n "Publishing $scope/$name... "
               cat $baseDir/$scope/$component | fn lit-ce --name $name | fn es-minify --module true > component.js
-              stat component.js
-              curl -sS --fail -H "Authorization: ${{ env.CDN_API_KEY }}" ${{ env.CDN_API_URL }}/component/$scope/$name@0.0.0 --data-binary @component.js
+              curl -v -H "Authorization: ${{ env.CDN_API_KEY }}" ${{ env.CDN_API_URL }}/component/$scope/$name@0.0.0 --data-binary @component.js
             done
           done
