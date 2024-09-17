@@ -27,7 +27,8 @@ jobs:
           export PATH="./node_modules/.bin:$PATH"
 
           for scope in $(ls -1 components); do
-            for component in $(ls -1 components/$scope/*.html); do
+            echo "Entering $scope"
+            for component in $(ls -1 components/$scope); do
               name=$(echo $component | sed s/.html//)
               echo -n "Publishing $scope/$name... "
               cat $baseDir/$scope/$component | \
