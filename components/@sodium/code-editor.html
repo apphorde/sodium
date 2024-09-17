@@ -1,0 +1,306 @@
+<template>
+  <div class="flex flex-col w-full h-full">
+    <div class="flex w-full h-full">
+      <div class="line-numbers">{{ lineNumbers }}</div>
+      <div class="relative overflow-auto w-full h-full editor-area">
+        <div class="layer preview overflow-hidden" ref="preview"></div>
+        <textarea
+          autocorrect="off"
+          autocapitalize="off"
+          autocomplete="off"
+          :name="name"
+          @input.stop="syncValue($event)"
+          @change.stop="syncValue($event)"
+          @keydown="onKeyEvent($event)"
+          @keyup="updatePosition()"
+          @select="updatePosition()"
+          @scroll="syncScroll($event)"
+          class="layer source"
+          ref="source"
+        ></textarea>
+      </div>
+    </div>
+    <div class="bg-gray-100 p-1 text-xs text-right border-t flex items-center space-x-1">
+      <span>{{ positionLine }}:{{ positionColumn }} ({{ positionSelection }}) - {{ positionLineCount }} L</span>
+    </div>
+  </div>
+</template>
+
+<style>
+  .line-numbers {
+    font-family: monospace;
+    line-height: 1rem;
+    letter-spacing: 0px;
+    font-size: 1rem;
+    text-align: right;
+    white-space: pre;
+    padding: 0.5rem;
+    opacity: 0.5;
+    user-select: none;
+  }
+
+  .layer {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    bottom: 0;
+    font-family: monospace;
+    line-height: 1rem;
+    letter-spacing: 0px;
+    font-size: 1rem;
+    padding: 0.5rem 0.25rem;
+  }
+
+  .preview {
+    z-index: 2;
+    white-space: pre;
+  }
+
+  .source {
+    z-index: 3;
+    caret-color: black;
+    background: transparent;
+    color: transparent;
+    overflow: auto;
+    white-space: nowrap;
+    resize: none;
+  }
+</style>
+
+<script setup="">
+  import { ref, defineEvents, defineProps, watch, onInit, loadCss, loadScript } from "@lithium/web";
+
+  const NEWLINE = "\n";
+  const SPACE = " ";
+  const SPACES = "  ";
+  const preview = ref(null);
+  const source = ref(null);
+  const styles = ref(null);
+  const lineNumbers = ref("");
+  const positionLine = ref(0);
+  const positionColumn = ref(0);
+  const positionSelection = ref(0);
+  const positionLineCount = ref(0);
+  const emit = defineEvents(["change"]);
+  const props = defineProps(["name", "value", "language"]);
+
+  function debounce(fn, time = 200) {
+    let t = 0;
+
+    return (...args) => {
+      clearTimeout(t);
+      t = setTimeout(() => fn(...args), time);
+    };
+  }
+
+  function getSource() {
+    return source.value.value || "";
+  }
+
+  function updateSource(value) {
+    source.value.value = value;
+  }
+
+  function updatePreview(code) {
+    const language = props.language || "javascript";
+    preview.value.innerHTML = window.hljs?.highlight(language, code + NEWLINE).value || "";
+    updateLineNumbers(code);
+    updatePosition();
+  }
+
+  function updateLineNumbers(code) {
+    lineNumbers.value = code
+      .split("\n")
+      .map((_, i) => i + 1)
+      .join("\n");
+  }
+
+  function countChars(str, char) {
+    let i = str.length;
+    let count = 0;
+
+    while (i > 0) {
+      if (str[i--] === char) count++;
+    }
+
+    return count;
+  }
+
+  function insertString(string) {
+    const target = source.value;
+    const start = target.selectionStart;
+    const position = start + string.length;
+    const code = getSource();
+    const beforeBlock = code.slice(0, start);
+    const afterBlock = code.slice(start);
+    updateSource(beforeBlock + string + afterBlock);
+    updateSelection(position, position);
+  }
+
+  function updatePosition() {
+    const start = source.value.selectionStart;
+    const end = source.value.selectionEnd;
+    const before = getSource().slice(0, start);
+    const selection = getSource().slice(start, end);
+
+    positionLine.value = before.split(NEWLINE).length;
+    positionColumn.value = start - before.lastIndexOf(NEWLINE);
+    positionSelection.value = end - start;
+    positionSelection.value = countChars(selection, NEWLINE) || 1;
+  }
+
+  function moveCodeBlock(event) {
+    const { target, shiftKey } = event;
+    const code = getSource();
+    let start = target.selectionStart;
+    const end = target.selectionEnd;
+
+    if (start > 0 && code.charAt(start - 1) !== NEWLINE) {
+      start = code.slice(0, start).lastIndexOf(NEWLINE);
+    }
+
+    const beforeBlock = code.slice(0, start);
+    const afterBlock = code.slice(end);
+    const selection = code.slice(start, end);
+    const lines = selection.split(NEWLINE);
+    const modifiedBlock = lines.map((line) => (shiftKey ? line.replace(SPACES, "") : SPACES + line)).join(NEWLINE);
+
+    updateSource(beforeBlock + modifiedBlock + afterBlock);
+    updateSelection(start, start + modifiedBlock.length);
+    onUpdate();
+  }
+
+  function moveCodeLine(event) {
+    const { target, shiftKey } = event;
+    const code = getSource();
+    const start = target.selectionStart;
+    const end = target.selectionEnd;
+    const left = code.slice(0, start);
+    const right = code.slice(end);
+    const lines = right.split(NEWLINE);
+    const line = lines.shift() || "";
+    const updatedLine = shiftKey ? line.replace(SPACES, "") : SPACES + line;
+    const newSource = left + [updatedLine, ...lines].join(NEWLINE);
+    const cursorPosition = shiftKey ? start - SPACES.length : start + SPACES.length;
+
+    updateSource(newSource);
+    updateSelection(cursorPosition, cursorPosition);
+    onUpdate();
+  }
+
+  function updateSelection(start, end) {
+    const target = source.value;
+    target.selectionEnd = start;
+    target.selectionStart = end;
+  }
+
+  function findIndentation(string) {
+    let cursor = 0;
+
+    while (cursor < string.length) {
+      if (string.charAt(cursor) !== SPACE) break;
+      cursor++;
+    }
+
+    return cursor;
+  }
+
+  function onTab(event) {
+    const { target } = event;
+    if (target.selectionStart !== target.selectionEnd) {
+      moveCodeBlock(event);
+      return;
+    }
+
+    moveCodeLine(event);
+  }
+
+  function onEnter(event) {
+    const code = getSource();
+    const target = source.value;
+    const position = target.selectionStart;
+    const char = code.charAt(position);
+
+    if (char && char !== NEWLINE) {
+      insertString(NEWLINE);
+      return;
+    }
+
+    let lineStart = position - 1;
+
+    while (lineStart > 0 && code.charAt(lineStart) !== NEWLINE) {
+      lineStart--;
+    }
+
+    const line = code.slice(lineStart + 1, position);
+    const indentation = findIndentation(line);
+    let insertion = "\n";
+
+    if (indentation) {
+      insertion += SPACE.repeat(indentation);
+    }
+
+    insertString(insertion);
+    onUpdate();
+  }
+
+  function onKeyEvent(event) {
+    const { target } = event;
+
+    if (event.key === "Tab" && !event.altKey) {
+      event.preventDefault();
+      onTab(event);
+    }
+
+    if (event.key === "Enter") {
+      if (target.selectionEnd === target.selectionStart) {
+        event.preventDefault();
+        onEnter(event);
+      }
+    }
+
+    updatePosition();
+  }
+
+  async function onUpdate() {
+    const code = getSource();
+    updatePreview(code);
+    props.value = code;
+    emit("change", code);
+    syncScroll();
+  }
+
+  function syncScroll() {
+    preview.value.scrollTop = source.value.scrollTop;
+  }
+
+  const syncValue = debounce(onUpdate, 10);
+
+  watch(
+    () => props.value,
+    (v) => {
+      if (getSource() !== v) {
+        updateSource(v);
+        onUpdate();
+      }
+    }
+  );
+
+  watch(
+    () => props.language,
+    (v) => {
+      updatePreview(getSource());
+    }
+  );
+
+  onInit(() => {
+    onUpdate();
+
+    loadCss("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css");
+
+    if (!window.hljs) {
+      loadScript("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js", "hljs");
+    }
+  });
+</script>
