@@ -224,6 +224,7 @@
 
     if (char && char !== NEWLINE) {
       insertString(NEWLINE);
+      onUpdate();
       return;
     }
 
