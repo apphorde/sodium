@@ -20,7 +20,7 @@
     }
   }
 
-  watch(props.icon, (name = "") => {
+  watch(() => props.icon, (name = "") => {
     svg.value.innerHTML = "";
 
     if (!name.trim()) {
