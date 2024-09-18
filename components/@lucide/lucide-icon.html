@@ -20,14 +20,14 @@
     }
   }
 
-  watch(() => props.icon, (name = "") => {
+  watch(() => props.icon, async (name = "") => {
     svg.value.innerHTML = "";
 
     if (!name.trim()) {
       return;
     }
 
-    const node = loadIcon(name);
+    const node = await loadIcon(name);
     svg.value.appendChild(node);
   });
 </script>
