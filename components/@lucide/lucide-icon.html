@@ -1,0 +1,33 @@
+<template><span ref="svg"></span></template>
+<script setup="">
+  import { ref, watch, defineProps } from "@lithium/web";
+  import createElement from "https://unpkg.com/lucide@latest/dist/esm/createElement.js";
+
+  const svg = ref(null);
+  const props = defineProps(["icon"]);
+
+  async function loadIcon(name) {
+    try {
+      const mod = await import(
+        `https://unpkg.com/lucide@latest/dist/esm/icons/${name}.js`
+      );
+      const icon = mod.default;
+      return createElement(icon);
+    } catch {
+      const node = document.createElement("span");
+      node.innerText = "icon missing: " + name;
+      return node;
+    }
+  }
+
+  watch(props.icon, (name = "") => {
+    svg.value.innerHTML = "";
+
+    if (!name.trim()) {
+      return;
+    }
+
+    const node = loadIcon(name);
+    svg.value.appendChild(node);
+  });
+</script>

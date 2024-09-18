@@ -1,0 +1,49 @@
+<script setup="">
+  import { onInit, defineProps, ref, watch } from "@lithium/web";
+
+  const props = defineProps(["source"]);
+  const frame = ref(null);
+  const deviceSize = ref("desktop");
+  const deviceWidth = ref("100%");
+  let sizeTable = {
+    desktop: "100%",
+    tablet: "1024px",
+    mobile: "640px",
+  };
+
+  function setDeviceSize(value) {
+    deviceSize.value = value;
+    deviceWidth.value = sizeTable[value];
+  }
+
+  function updatePreview() {
+    frame.value.contentWindow.document.body.innerHTML = props.source;
+  }
+
+  onInit(function () {
+    frame.value.contentWindow.onerror = (e) => console.error(e);
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css";
+    frame.value.contentWindow.document.head.append(link);
+  });
+
+  watch(() => props.source, updatePreview);
+</script>
+
+<template>
+  <div class="bg-gray-200 p-1 h-full flex flex-col items-center">
+    <select-viewport
+      class="mb-2"
+      :value="deviceSize"
+      @select="setDeviceSize($event.detail)"
+    ></select-viewport>
+    <iframe
+      ref="frame"
+      class="h-full bg-white mx-auto rounded border-gray-400"
+      .style.width="deviceWidth"
+    ></iframe>
+  </div>
+</template>
