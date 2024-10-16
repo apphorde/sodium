@@ -104,7 +104,7 @@
 
   function updatePreview(code) {
     const language = props.language || "javascript";
-    preview.value.innerHTML = window.hljs?.highlight(language, code + NEWLINE).value || "";
+    preview.value.innerHTML = window.hljs?.highlight(language, code + NEWLINE).value || code;
     updateLineNumbers(code);
     updatePosition();
   }
@@ -298,10 +298,7 @@
   onInit(() => {
     onUpdate();
 
-    loadCss("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css");
-
-    if (!window.hljs) {
-      loadScript("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js", "hljs");
-    }
+    loadCss("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css", { id: 'hlcss' });
+    loadScript("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js", { id: "hljs", condition: !window.hljs });
   });
 </script>
