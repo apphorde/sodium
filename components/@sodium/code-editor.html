@@ -20,8 +20,13 @@
         ></textarea>
       </div>
     </div>
-    <div class="bg-gray-100 p-1 text-xs text-right border-t flex items-center space-x-1">
-      <span>{{ positionLine }}:{{ positionColumn }} ({{ positionSelection }}) - {{ positionLineCount }} L</span>
+    <div
+      class="bg-gray-100 p-1 text-xs text-right border-t flex items-center space-x-1"
+    >
+      <span
+        >{{ positionLine }}:{{ positionColumn }} ({{ positionSelection }}) - {{
+        positionLineCount }} L</span
+      >
     </div>
   </div>
 </template>
@@ -69,7 +74,15 @@
 </style>
 
 <script setup="">
-  import { ref, defineEvents, defineProps, watch, onInit, loadCss, loadScript } from "@lithium/web";
+  import {
+    ref,
+    defineEvents,
+    defineProps,
+    watch,
+    onInit,
+    loadCss,
+    loadScript,
+  } from "@lithium/web";
 
   const NEWLINE = "\n";
   const SPACE = " ";
@@ -104,7 +117,8 @@
 
   function updatePreview(code) {
     const language = props.language || "javascript";
-    preview.value.innerHTML = window.hljs?.highlight(language, code + NEWLINE).value || code;
+    preview.value.innerHTML =
+      window.hljs?.highlight(language, code + NEWLINE).value || code;
     updateLineNumbers(code);
     updatePosition();
   }
@@ -164,7 +178,9 @@
     const afterBlock = code.slice(end);
     const selection = code.slice(start, end);
     const lines = selection.split(NEWLINE);
-    const modifiedBlock = lines.map((line) => (shiftKey ? line.replace(SPACES, "") : SPACES + line)).join(NEWLINE);
+    const modifiedBlock = lines
+      .map((line) => (shiftKey ? line.replace(SPACES, "") : SPACES + line))
+      .join(NEWLINE);
 
     updateSource(beforeBlock + modifiedBlock + afterBlock);
     updateSelection(start, start + modifiedBlock.length);
@@ -182,7 +198,9 @@
     const line = lines.shift() || "";
     const updatedLine = shiftKey ? line.replace(SPACES, "") : SPACES + line;
     const newSource = left + [updatedLine, ...lines].join(NEWLINE);
-    const cursorPosition = shiftKey ? start - SPACES.length : start + SPACES.length;
+    const cursorPosition = shiftKey
+      ? start - SPACES.length
+      : start + SPACES.length;
 
     updateSource(newSource);
     updateSelection(cursorPosition, cursorPosition);
@@ -297,8 +315,15 @@
 
   onInit(() => {
     onUpdate();
-
-    loadCss("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css", { id: 'hlcss' });
-    loadScript("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js", { id: "hljs", condition: !window.hljs });
   });
+
+  loadCss(
+    "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css",
+    { id: "hlcss" }
+  );
+
+  loadScript(
+    "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js",
+    { id: "hljs", condition: !window.hljs }
+  );
 </script>
