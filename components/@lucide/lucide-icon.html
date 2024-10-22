@@ -4,7 +4,18 @@
   import createElement from "https://unpkg.com/lucide@latest/dist/esm/createElement.js";
 
   const svg = ref(null);
-  const props = defineProps(["icon"]);
+  const props = defineProps(["icon", "iconClasses"]);
+
+  let ce;
+
+  async function createElement(name) {
+    if (!ce) {
+      const mod = await import("https://unpkg.com/lucide@latest/dist/esm/createElement.js")
+      ce = mod.default;
+    }
+
+    return ce(name);
+  }
 
   async function loadIcon(name) {
     try {
@@ -29,5 +40,9 @@
 
     const node = await loadIcon(name);
     svg.value.appendChild(node);
+
+    if (props.iconClasses) {
+      svg.className = props.iconClasses;
+    }
   });
 </script>
