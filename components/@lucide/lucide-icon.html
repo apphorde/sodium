@@ -1,7 +1,6 @@
 <template><span ref="svg"></span></template>
 <script setup="">
   import { ref, watch, defineProps } from "@lithium/web";
-  import createElement from "https://unpkg.com/lucide@latest/dist/esm/createElement.js";
 
   const svg = ref(null);
   const props = defineProps(["icon", "iconClasses"]);

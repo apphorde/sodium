@@ -23,6 +23,7 @@ jobs:
           CDN_API_URL: ${{ secrets.CDN_API_URL }}
           CDN_API_KEY: ${{ secrets.CDN_API_KEY }}
         run: |
+          set -e
           export baseDir=components
           export PATH="./node_modules/.bin:$PATH"
 
