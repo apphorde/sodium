@@ -292,6 +292,7 @@
 
   function syncScroll() {
     preview.value.scrollTop = source.value.scrollTop;
+    preview.value.scrollLeft = source.value.scrollLeft;
   }
 
   const syncValue = debounce(onUpdate, 10);
