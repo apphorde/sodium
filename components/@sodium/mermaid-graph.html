@@ -1,0 +1,13 @@
+<script setup="">
+  import { watch, defineProps, onInit } from "@lithium/web";
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/";
+
+  mermaid.initialize({ startOnLoad: true });
+
+  onInit(function ({ element }) {
+    mermaid.run({ nodes: [element] });
+  });
+</script>
+<template>
+  <div></div>
+</template>
