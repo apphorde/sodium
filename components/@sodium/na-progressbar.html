@@ -1,0 +1,21 @@
+<template>
+  <div class="mt-2 bg-gray-200 rounded-full h-2">
+    <div
+      class="bg-blue-600 rounded-full h-2"
+      style-width="`${(value / max) * 100}%`"
+      style-background="background || 'rgb(37 99 235)'"
+    ></div>
+  </div>
+  <p class="text-xs text-gray-500 mt-2">{{ label }}</p>
+</template>
+
+<script setup>
+  import { defineProps } from "@lithium/web";
+
+  defineProps({
+    value: { type: Number, default: 100 },
+    max: { type: Number, default: 100 },
+    color: { type: String, default: "" },
+    label: { type: String, default: "" },
+  });
+</script>
