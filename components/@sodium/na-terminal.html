@@ -1,0 +1,47 @@
+<template shadowdom="open">
+  <div ref="terminalRef"></div>
+</template>
+
+<script setup>
+  import {
+    ref,
+    defineProps,
+    defineEvents,
+    onInit,
+    onDestroy,
+    loadCss,
+  } from "@lithium/web";
+
+  const terminalRef = ref(null);
+  const terminal = new window.Terminal({ convertEol: true });
+  const fitAddon = new window.FitAddon.FitAddon();
+  const emit = defineEvents(["ready"]);
+  const props = defineProps(["controller"]);
+
+  function onResize() {
+    fitAddon.fit();
+  }
+
+  onInit(() => {
+    terminal.loadAddon(fitAddon);
+    terminal.open(terminalRef.value);
+    terminal.onData((c) => emit("data", c));
+    terminal.onResize(({ cols, rows }) => emit("resize", { cols, rows }));
+
+    if (props.controller) {
+      const c = props.controller;
+      c.addEventListener("data", (c) => terminal.write(c));
+      c.addEventListener("clear", () => terminal.clear());
+      c.addEventListener("resize", onResize);
+    }
+
+    window.addEventListener("resize", onResize);
+    emit("ready", terminal);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener("resize", onResize);
+  });
+
+  loadCss("https://cdnjs.cloudflare.com/ajax/libs/xterm/5.5.0/xterm.min.css");
+</script>
