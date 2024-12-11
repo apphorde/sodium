@@ -27,11 +27,21 @@ jobs:
           export baseDir=components
           export PATH="./node_modules/.bin:$PATH"
 
-          for scope in $(ls -1 components); do
+          for scope in $(ls -1 $baseDir); do
             echo "Entering $scope"
-            for component in $(ls -1 components/$scope); do
+            for component in $(ls -1 $baseDir/$scope); do
               name=$(echo $component | sed s/.html//)
               echo -n "Publishing $scope/$name... "
-              cat $baseDir/$scope/$component | fn lit-ce --name $name --minify true | curl -sS --fail -H "Authorization: ${{ env.CDN_API_KEY }}" ${{ env.CDN_API_URL }}/$scope/$name@0.0.0 --data-binary @-
+              cat $baseDir/$scope/$component | fn lit-ce --name $name --minify true | curl -sS --fail -H "Authorization: ${{ env.CDN_API_KEY }}" ${{ env.CDN_API_URL }}/component/$scope/$name@0.0.0 --data-binary @-
+            done
+          done
+
+          export baseDir=libraries
+          for scope in $(ls -1 $baseDir); do
+            echo "Entering $scope"
+            for library in $(ls -1 $baseDir/$scope); do
+              name=$(echo $library | sed s/.mjs//)
+              echo -n "Publishing $scope/$name... "
+              cat $baseDir/$scope/$library | fn es-minify --module true | curl -sS --fail -H "Authorization: ${{ env.CDN_API_KEY }}" ${{ env.CDN_API_URL }}/library/$scope/$name@0.0.0 --data-binary @-
             done
           done
