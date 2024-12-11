@@ -1,21 +1,28 @@
 <template>
-  <div ref="chart"></div>
+  <div ref="chartRef"></div>
 </template>
 
 <script setup>
   import { Chart } from "https://unpkg.com/frappe-charts@1.6.1/dist/frappe-charts.esm.js";
-  import { ref, watch, defineProps } from "@lithium/web";
+  import { ref, watch, defineProps, onInit } from "@lithium/web";
 
+  const emptyChart = { labels: [], datasets: [] };
   const props = defineProps(["inputs", "type", "options"]);
-  const chart = ref(null);
+  const chartRef = ref(null);
+  let chart;
 
-  function onRender() {
-    chart.value.innerHTML = "";
-    new Chart(chart.value, {
+  onInit(() => {
+    chart = new Chart(chart.value, {
       data: props.inputs,
       type: props.type || "line",
       ...(props.options || {}),
     });
+  });
+
+  function onRender() {
+    if (!chart) return;
+
+    chart.update(props.inputs || emptyChart);
   }
 
   watch(() => props.inputs, onRender);
