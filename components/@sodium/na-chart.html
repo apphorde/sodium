@@ -13,7 +13,7 @@
 
   onInit(() => {
     chart = new Chart(chartRef.value, {
-      data: props.inputs,
+      data: props.inputs || emptyChart,
       type: props.type || "line",
       ...(props.options || {}),
     });
