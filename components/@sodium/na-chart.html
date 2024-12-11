@@ -6,19 +6,19 @@
   import { Chart } from "https://unpkg.com/frappe-charts@1.6.1/dist/frappe-charts.esm.js";
   import { ref, watch, defineProps } from "@lithium/web";
 
-  const props = defineProps(["data", "type", "options"]);
+  const props = defineProps(["inputs", "type", "options"]);
   const chart = ref(null);
 
   function onRender() {
     chart.value.innerHTML = "";
     new Chart(chart.value, {
-      data,
+      data: props.inputs,
       type: props.type || "line",
       ...(props.options || {}),
     });
   }
 
-  watch(props.data, onRender);
-  watch(props.type, onRender);
-  watch(props.options, onRender);
+  watch(() => props.inputs, onRender);
+  watch(() => props.type, onRender);
+  watch(() => props.options, onRender);
 </script>
