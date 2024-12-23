@@ -3,16 +3,25 @@
 </template>
 
 <script setup>
-  import { ref } from "@lithium/web";
+  import { ref, materialize, html } from "@lithium/web";
   const output = ref(null);
-  window.console.log = (...args) => {
-    output.value.innerHTML += args.map(JSON.stringify).join(",");
+
+  const fn = (...args) => {
+    output.value.append(
+      materialize(html(`<div>${args.map(JSON.stringify).join(",")}</div>`))
+    );
   };
+
+  window.console.log = fn;
+  window.console.info = fn;
+  window.console.error = fn;
 </script>
 
 <style>
   .console {
     padding: 1rem;
     white-space: pre-wrap;
+    font-family: monospace;
+    font-size: 12px;
   }
 </style>
