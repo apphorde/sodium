@@ -1,0 +1,18 @@
+<template>
+  <div class="" ref="output"></div>
+</template>
+
+<script setup>
+  import {ref} from '@lithium/web';
+  const output = ref(null)
+  window.console.log = (...args) => {
+    output.value.innerHTML += args
+      .map(JSON.stringify)
+      .join(',');
+  }
+</script>
+
+<style>debug-console{
+  padding: 1rem;
+  white-space: pre-wrap;
+}</style>
