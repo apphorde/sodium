@@ -1,15 +1,33 @@
-<template><span ref="svg"></span></template>
+<template
+  ><span class="sr-only">{{label}}</span><span ref="svg"></span
+></template>
+<style>
+  /* From Tailwind 2 */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>
 <script setup="">
   import { ref, watch, defineProps } from "@lithium/web";
 
   const svg = ref(null);
-  const props = defineProps(["icon", "iconClasses"]);
+  const props = defineProps(["icon", "iconClasses", "label"]);
 
   let ce;
 
   async function createElement(name) {
     if (!ce) {
-      const mod = await import("https://unpkg.com/lucide@latest/dist/esm/createElement.js")
+      const mod = await import(
+        "https://unpkg.com/lucide@latest/dist/esm/createElement.js"
+      );
       ce = mod.default;
     }
 
@@ -30,18 +48,21 @@
     }
   }
 
-  watch(() => props.icon, async (name = "") => {
-    svg.value.innerHTML = "";
+  watch(
+    () => props.icon,
+    async (name = "") => {
+      svg.value.innerHTML = "";
 
-    if (!name.trim()) {
-      return;
+      if (!name.trim()) {
+        return;
+      }
+
+      const node = await loadIcon(name);
+      svg.value.appendChild(node);
+
+      if (props.iconClasses) {
+        node.className.baseVal = props.iconClasses;
+      }
     }
-
-    const node = await loadIcon(name);
-    svg.value.appendChild(node);
-
-    if (props.iconClasses) {
-      node.className.baseVal = props.iconClasses;
-    }
-  });
+  );
 </script>

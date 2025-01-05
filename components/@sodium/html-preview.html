@@ -1,6 +1,6 @@
 <script setup="">
   import { onInit, defineProps, ref, watch } from "@lithium/web";
-  import '@sodium/select-viewport';
+  import "@sodium/select-viewport";
 
   const props = defineProps(["source"]);
   const frame = ref(null);
@@ -18,33 +18,32 @@
   }
 
   function updatePreview() {
-    frame.value.contentWindow.document.body.innerHTML = props.source;
+    frame.value.innerHTML = props.source;
   }
 
-  onInit(function () {
-    frame.value.contentWindow.onerror = (e) => console.error(e);
+  loadCss(
+    "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+  );
 
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href =
-      "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css";
-    frame.value.contentWindow.document.head.append(link);
-  });
+  // onInit(function () {
+  //   frame.value.contentWindow.onerror = (e) => console.error(e);
+  //   frame.value.contentWindow.document.head.append(link);
+  // });
 
   watch(() => props.source, updatePreview);
 </script>
 
-<template>
+<template shadow-dom="open">
   <div class="bg-gray-200 p-1 h-full flex flex-col items-center">
     <select-viewport
       class="mb-2"
       :value="deviceSize"
       @select="setDeviceSize($event.detail)"
     ></select-viewport>
-    <iframe
+    <div
       ref="frame"
       class="h-full bg-white mx-auto rounded border-gray-400"
       .style.width="deviceWidth"
-    ></iframe>
+    ></div>
   </div>
 </template>
