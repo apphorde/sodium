@@ -284,9 +284,13 @@
 
   async function onUpdate() {
     const code = getSource();
-    updatePreview(code);
-    props.value = code;
-    emit("change", code);
+
+    if (props.value !== code) {
+      updatePreview(code);
+      props.value = code;
+      emit("change", code);
+    }
+
     syncScroll();
   }
 
