@@ -3,7 +3,7 @@
     attr-aria-label="label"></span>
 </template>
 <script setup>
-  import { onInit, ref, watch, defineProps } from "@lithium/web";
+  import { onInit, onUpdate, ref, watch, defineProps } from "@lithium/web";
 
   const svg = ref(null);
   const props = defineProps(["icon", "iconClasses", "label", "size"]);
@@ -60,5 +60,5 @@
     }
   }
 
-  watch(() => props.icon, update);
+  onUpdate(update);
 </script>
