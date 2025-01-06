@@ -52,7 +52,11 @@
     }
 
     if (props.size) {
-      node.width = node.height = node.viewBox.baseVal.width = node.viewBox.baseVal.height = props.size;
+      const size = Number(props.size);
+      node.width.baseVal.width = size;
+      node.height.baseVal.height = size;
+      node.viewBox.baseVal.width = size;
+      node.viewBox.baseVal.height = size;
     }
   }
 
