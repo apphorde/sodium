@@ -6,7 +6,7 @@
   import { onInit, ref, watch, defineProps } from "@lithium/web";
 
   const svg = ref(null);
-  const props = defineProps(["icon", "iconClasses", "label"]);
+  const props = defineProps(["icon", "iconClasses", "label", "size"]);
 
   let ce;
 
@@ -50,6 +50,10 @@
 
     if (props.iconClasses) {
       node.className.baseVal = props.iconClasses;
+    }
+
+    if (props.size) {
+      node.width = node.height = node.viewBox.baseVal.width = node.viewBox.baseVal.height = props.size;
     }
   }
 
