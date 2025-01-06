@@ -38,7 +38,7 @@
   async function update() {
     const icon = props.icon;
 
-    if (!icon.trim()) {
+    if (!icon?.trim()) {
       svg.value.innerHTML = "";
       return;
     }
