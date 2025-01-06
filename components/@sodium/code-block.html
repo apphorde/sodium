@@ -1,0 +1,29 @@
+<template shadow-dom="open">
+  <code attr-lang="language">
+    <pre ref="preview">
+      <slot></slot>
+    </pre>
+  </code>
+</template>
+
+<script setup>
+  import { ref, defineProps, loadCss, loadScript, onInit } from '@lithium/web';
+
+  const props = defineProps(['language', 'source']);
+  const preview = ref(null);
+
+  loadCss(
+    "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css"
+  );
+
+  loadScript(
+    "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js"
+  );
+
+  onInit(function ($el) {
+    const source = props.source || $el.element.innerHTML.trim() || '';
+    const language = props.language || '';
+    preview.value.innerHTML = window.hljs?.highlight(language, source).value || source;
+  })
+
+</script>
