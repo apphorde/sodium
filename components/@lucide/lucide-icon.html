@@ -36,16 +36,15 @@
   }
 
   async function update() {
-    if (!svg.value) return;
-
-    svg.value.innerHTML = "";
     const icon = props.icon;
 
     if (!icon.trim()) {
+      svg.value.innerHTML = "";
       return;
     }
 
     const node = await loadIcon(icon);
+    svg.value.innerHTML = "";
     svg.value.appendChild(node);
 
     if (props.iconClasses) {
@@ -57,6 +56,5 @@
     }
   }
 
-  onInit(update);
   watch(() => props.icon, update);
 </script>
