@@ -1,8 +1,8 @@
 <template>
-  <span attr-aria-label="label"
-    ref="svg"></span>
+  <span ref="svg"
+    attr-aria-label="label"></span>
 </template>
-<script setup="">
+<script setup>
   import { onInit, ref, watch, defineProps } from "@lithium/web";
 
   const svg = ref(null);
