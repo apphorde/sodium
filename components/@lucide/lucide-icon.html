@@ -1,22 +1,9 @@
 <template>
-  <span attr-aria-label="label" ref="svg"></span>
+  <span attr-aria-label="label"
+    ref="svg"></span>
 </template>
-<style>
-  /* From Tailwind 2 */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-</style>
 <script setup="">
-  import { ref, watch, defineProps } from "@lithium/web";
+  import { onInit, ref, watch, defineProps } from "@lithium/web";
 
   const svg = ref(null);
   const props = defineProps(["icon", "iconClasses", "label"]);
@@ -48,21 +35,24 @@
     }
   }
 
-  watch(
-    () => props.icon,
-    async (name = "") => {
-      svg.value.innerHTML = "";
+  async function update() {
+    if (!svg.value) return;
 
-      if (!name.trim()) {
-        return;
-      }
+    svg.value.innerHTML = "";
+    const icon = props.icon;
 
-      const node = await loadIcon(name);
-      svg.value.appendChild(node);
-
-      if (props.iconClasses) {
-        node.className.baseVal = props.iconClasses;
-      }
+    if (!icon.trim()) {
+      return;
     }
-  );
+
+    const node = await loadIcon(icon);
+    svg.value.appendChild(node);
+
+    if (props.iconClasses) {
+      node.className.baseVal = props.iconClasses;
+    }
+  }
+
+  onInit(update);
+  watch(() => props.icon, update);
 </script>
