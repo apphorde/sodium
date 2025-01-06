@@ -52,11 +52,9 @@
     }
 
     if (props.size) {
-      const size = Number(props.size) | 0;
-      node.width.baseVal.value = size;
-      node.height.baseVal.value = size;
-      node.viewBox.baseVal.width = size;
-      node.viewBox.baseVal.height = size;
+      const size = String(props.size);
+      node.setAttribute('width', size);
+      node.setAttribute('height', size);
     }
   }
 
