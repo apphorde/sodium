@@ -286,13 +286,13 @@
     const code = getSource();
 
     updatePreview(code);
+    syncScroll();
 
     if (props.value !== code) {
       props.value = code;
       emit("change", code);
     }
 
-    syncScroll();
   }
 
   function syncScroll() {
