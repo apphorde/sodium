@@ -1,5 +1,5 @@
 <script setup="">
-  import { onInit, defineProps, ref, watch } from "@lithium/web";
+  import { onInit, defineProps, ref, watch } from "@li3/web";
   import "@sodium/select-viewport";
 
   const props = defineProps(["source"]);
@@ -35,15 +35,11 @@
 
 <template shadow-dom="open">
   <div class="bg-gray-200 p-1 h-full flex flex-col items-center">
-    <select-viewport
-      class="mb-2"
+    <select-viewport class="mb-2"
       :value="deviceSize"
-      @select="setDeviceSize($event.detail)"
-    ></select-viewport>
-    <div
-      ref="frame"
+      @select="setDeviceSize($event.detail)"></select-viewport>
+    <div ref="frame"
       class="h-full bg-white mx-auto rounded border-gray-400"
-      .style.width="deviceWidth"
-    ></div>
+      .style.width="deviceWidth"></div>
   </div>
 </template>

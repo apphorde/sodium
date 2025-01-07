@@ -16,7 +16,7 @@ jobs:
 
       - name: Prepare environment
         run: |
-          npm i @lithium/sfc @node-lambdas/cli
+          npm i @li3/sfc @node-lambdas/cli
 
       - name: Publish to AppHorde Registry
         env:

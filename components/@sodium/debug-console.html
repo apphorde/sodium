@@ -1,9 +1,10 @@
 <template shadowdom="open">
-  <div class="console" ref="output"></div>
+  <div class="console"
+    ref="output"></div>
 </template>
 
 <script setup>
-  import { ref, materialize, html } from "@lithium/web";
+  import { ref, materialize, html } from "@li3/web";
   const output = ref(null);
 
   const fn = (...args) => {

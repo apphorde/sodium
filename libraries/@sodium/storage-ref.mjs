@@ -1,4 +1,4 @@
-import { ref } from "@lithium/reactive";
+import { ref } from "@li3/reactive";
 
 function storageRef(type, name, initialValue) {
   const backend = type === "session" ? sessionStorage : localStorage;

@@ -1,6 +1,6 @@
 # sodium
 
-A component library using @lithium/web
+A component library using @li3/web
 
 ## Usage
 
@@ -15,7 +15,7 @@ Then load the components you want to use in your page:
     <script type="importmap">
       {
         "imports": {
-          "@lithium/": "https://--lithium.static.apphor.de/",
+          "@li3/": "https://--lithium.static.apphor.de/",
           "@sodium/": "https://--sodium.static.apphor.de/",
         }
       }
