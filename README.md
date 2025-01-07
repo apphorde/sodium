@@ -15,7 +15,7 @@ Then load the components you want to use in your page:
     <script type="importmap">
       {
         "imports": {
-          "@li3/": "https://--lithium.static.apphor.de/",
+          "@li3/": "https://--li3.static.apphor.de/",
           "@sodium/": "https://--sodium.static.apphor.de/",
         }
       }
