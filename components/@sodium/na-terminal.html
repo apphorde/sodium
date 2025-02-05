@@ -15,8 +15,8 @@
   const terminalRef = ref(null);
   const terminal = new window.Terminal({ convertEol: true });
   const fitAddon = new window.FitAddon.FitAddon();
-  const emit = defineEvents(["ready"]);
-  const props = defineProps(["controller"]);
+  const emit = defineEvents(["ready", "data", "resize"]);
+  const controller = defineProp('controller', null);
 
   function onResize() {
     fitAddon.fit();
@@ -28,8 +28,8 @@
     terminal.onData((c) => emit("data", c));
     terminal.onResize(({ cols, rows }) => emit("resize", { cols, rows }));
 
-    if (props.controller) {
-      const c = props.controller;
+    if (controller.value) {
+      const c = controller.value;
       c.addEventListener("data", (c) => terminal.write(c));
       c.addEventListener("clear", () => terminal.clear());
       c.addEventListener("resize", onResize);

@@ -1,12 +1,13 @@
 <script setup="">
-  import { onInit, defineProps, ref, watch } from "@li3/web";
+  import { onInit, defineProp, ref, watch } from "@li3/web";
   import "@sodium/select-viewport";
 
-  const props = defineProps(["source"]);
+  const source = defineProp("source");
   const frame = ref(null);
   const deviceSize = ref("desktop");
   const deviceWidth = ref("100%");
-  let sizeTable = {
+
+  const sizeTable = {
     desktop: "100%",
     tablet: "1024px",
     mobile: "640px",
@@ -18,19 +19,14 @@
   }
 
   function updatePreview() {
-    frame.value.innerHTML = props.source.value;
+    frame.value.innerHTML = source.value;
   }
 
   loadCss(
     "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
   );
 
-  // onInit(function () {
-  //   frame.value.contentWindow.onerror = (e) => console.error(e);
-  //   frame.value.contentWindow.document.head.append(link);
-  // });
-
-  watch(() => props.source.value, updatePreview);
+  watch(source, updatePreview);
 </script>
 
 <template shadow-dom="open">

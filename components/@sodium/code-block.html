@@ -9,7 +9,7 @@
 <script setup>
   import { ref, defineProps, loadCss, loadScript, onInit } from '@li3/web';
 
-  const {source, language} = defineProps(['language', 'source']);
+  const { source, language } = defineProps(['language', 'source']);
   const preview = ref(null);
 
   loadCss(
@@ -20,10 +20,10 @@
     "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js"
   );
 
-  onInit(function ($el) {
-    const source = source.value || $el.element.innerHTML.trim() || '';
+  onInit(function ({ element }) {
+    const src = source.value || element.innerHTML.trim() || '';
     const language = language.value || '';
-    preview.value.innerHTML = window.hljs?.highlight(language, source).value || source;
+    preview.value.innerHTML = window.hljs?.highlight(language, src).value || src;
   })
 
 </script>

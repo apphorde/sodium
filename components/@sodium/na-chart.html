@@ -1,4 +1,4 @@
-<template shadowdom="open">
+<template shadow-dom="open">
   <div ref="chartRef"></div>
 </template>
 
@@ -13,19 +13,19 @@
 
   onInit(() => {
     chart = new Chart(chartRef.value, {
-      data: props.inputs || emptyChart,
-      type: props.type || "line",
-      ...(props.options || {}),
+      data: props.inputs.value || emptyChart,
+      type: props.type.value || "line",
+      ...(props.options.value || {}),
     });
   });
 
   function onRender() {
     if (!chart) return;
 
-    chart.update(props.inputs || emptyChart);
+    chart.update(props.inputs.value || emptyChart);
   }
 
-  watch(() => props.inputs, onRender);
-  watch(() => props.type, onRender);
-  watch(() => props.options, onRender);
+  watch(props.inputs, onRender);
+  watch(props.type, onRender);
+  watch(props.options, onRender);
 </script>
