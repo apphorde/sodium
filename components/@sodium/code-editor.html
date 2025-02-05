@@ -111,7 +111,7 @@
   }
 
   function updatePreview(code) {
-    const language = props.language || "javascript";
+    const language = props.language.value || "javascript";
     preview.value.innerHTML =
       window.hljs?.highlight(language, code + NEWLINE).value || code;
     updateLineNumbers(code);
@@ -283,11 +283,9 @@
     updatePreview(code);
     syncScroll();
 
-    if (props.value !== code) {
-      props.value = code;
+    if (props.value.value !== code) {
       emit("change", code);
     }
-
   }
 
   function syncScroll() {
@@ -298,7 +296,7 @@
   const syncValue = debounce(onUpdate, 10);
 
   watch(
-    () => props.value,
+    () => props.value.value,
     (v) => {
       if (getSource() !== v) {
         updateSource(v);
@@ -308,7 +306,7 @@
   );
 
   watch(
-    () => props.language,
+    () => props.language.value,
     (v) => {
       updatePreview(getSource());
     }

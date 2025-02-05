@@ -8,9 +8,7 @@
   const output = ref(null);
 
   const fn = (...args) => {
-    output.value.append(
-      materialize(html(`<div>${args.map(JSON.stringify).join(",")}</div>`))
-    );
+    output.value.append(tpl(`<div>${args.map(JSON.stringify).join(",")}</div>`).contents);
   };
 
   window.console.log = fn;

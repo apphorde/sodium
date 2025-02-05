@@ -36,7 +36,7 @@
   }
 
   async function update() {
-    const icon = props.icon;
+    const icon = props.icon.value;
 
     if (!icon?.trim()) {
       svg.value.innerHTML = "";
@@ -47,12 +47,12 @@
     svg.value.innerHTML = "";
     svg.value.appendChild(node);
 
-    if (props.iconClasses) {
-      node.className.baseVal = props.iconClasses;
+    if (props.iconClasses.value) {
+      node.className.baseVal = props.iconClasses.value;
     }
 
-    if (props.size) {
-      const size = String(props.size);
+    if (props.size.value) {
+      const size = String(props.size.value);
       node.setAttribute('width', size);
       node.setAttribute('height', size);
     }

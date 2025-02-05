@@ -21,8 +21,8 @@
   );
 
   onInit(function ($el) {
-    const source = props.source || $el.element.innerHTML.trim() || '';
-    const language = props.language || '';
+    const source = props.source.value || $el.element.innerHTML.trim() || '';
+    const language = props.language.value || '';
     preview.value.innerHTML = window.hljs?.highlight(language, source).value || source;
   })
 
