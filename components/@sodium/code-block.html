@@ -9,7 +9,7 @@
 <script setup>
   import { ref, defineProps, loadCss, loadScript, onInit } from '@li3/web';
 
-  const props = defineProps(['language', 'source']);
+  const {source, language} = defineProps(['language', 'source']);
   const preview = ref(null);
 
   loadCss(
@@ -21,8 +21,8 @@
   );
 
   onInit(function ($el) {
-    const source = props.source.value || $el.element.innerHTML.trim() || '';
-    const language = props.language.value || '';
+    const source = source.value || $el.element.innerHTML.trim() || '';
+    const language = language.value || '';
     preview.value.innerHTML = window.hljs?.highlight(language, source).value || source;
   })
 
