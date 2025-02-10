@@ -13,7 +13,8 @@
     try {
       const html = await markdown(source);
       element.innerHTML = html || source;
-    } catch {
+    } catch (error) {
+      console.error(error);
       element.innerHTML = source;
     }
   });
