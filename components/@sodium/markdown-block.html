@@ -3,13 +3,13 @@
   import markdown from 'https://markdown.jsfn.run/index.mjs';
 
   onInit(async function ({ element }) {
-    const source = element.innerHTML.trim() || '';
+    const source = (element.querySelector('pre') || element).innerHTML.trim() || '';
 
     if (!source) return;
 
     try {
       const html = await markdown(source);
-      element.innerHTML = html;
+      element.innerHTML = html || source;
     } catch {
       element.innerHTML = source;
     }
