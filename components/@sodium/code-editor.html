@@ -73,7 +73,6 @@
     ref,
     defineEvents,
     defineProps,
-    watch,
     onInit,
     loadCss,
     loadScript,
@@ -295,22 +294,14 @@
 
   const syncValue = debounce(onUpdate, 10);
 
-  watch(
-    () => props.value.value,
-    (v) => {
-      if (getSource() !== v) {
-        updateSource(v);
-        onUpdate();
-      }
+  props.value.watch((v) => {
+    if (getSource() !== v) {
+      updateSource(v);
+      onUpdate();
     }
-  );
+  });
 
-  watch(
-    () => props.language.value,
-    (v) => {
-      updatePreview(getSource());
-    }
-  );
+  props.language.watch((v) => updatePreview(getSource()));
 
   onInit(() => {
     onUpdate();
