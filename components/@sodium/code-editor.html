@@ -3,9 +3,9 @@
     <div class="flex w-full h-full">
       <div class="line-numbers">{{ lineNumbers }}</div>
       <div class="relative overflow-auto w-full h-full editor-area">
-        <div class="layer preview overflow-hidden"
-          ref="preview"></div>
-        <textarea autocorrect="off"
+        <div class="layer preview overflow-hidden" ref="preview"></div>
+        <textarea
+          autocorrect="off"
           autocapitalize="off"
           autocomplete="off"
           bind-name="name"
@@ -16,12 +16,17 @@
           on-select="updatePosition()"
           on-scroll="syncScroll($event)"
           class="layer source"
-          ref="source"></textarea>
+          ref="source"
+        ></textarea>
       </div>
     </div>
-    <div class="bg-gray-100 p-1 text-xs text-right border-t flex items-center space-x-1">
-      <span>{{ positionLine }}:{{ positionColumn }} ({{ positionSelection }}) - {{
-        positionLineCount }} L</span>
+    <div
+      class="bg-gray-100 p-1 text-xs text-right border-t flex items-center space-x-1"
+    >
+      <span
+        >{{ positionLine }}:{{ positionColumn }} ({{ positionSelection }}) - {{
+        positionLineCount }} L</span
+      >
     </div>
   </div>
 </template>
@@ -281,10 +286,7 @@
 
     updatePreview(code);
     syncScroll();
-
-    if (props.value.value !== code) {
-      emit("change", code);
-    }
+    emit("change", code);
   }
 
   function syncScroll() {

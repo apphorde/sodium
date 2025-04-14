@@ -1,0 +1,55 @@
+<template>
+  <div
+    className="w-64 rounded-lg border bg-card text-card-foreground shadow-sm"
+  >
+    <div className="px-4 py-2">
+      <h2 className="text-lg font-semibold">Menu</h2>
+    </div>
+    <div>
+      <menu-container>
+        <template for="item of items">
+          <menu-item :key="item.id">
+            <menu-button
+              on-click="hasSubItems && toggleSubmenu(item.id)"
+              class="w-full justify-between"
+              class-font-semibold="hasSubItems"
+            >
+              {{item.title}}
+              <template if="hasSubItems">
+                <span className="ml-auto">
+                  <lucide-icon
+                    className="h-4 w-4"
+                    :icon="isOpen ? 'chevron-down' : 'chevron-right'"
+                  ></lucide-icon>
+                </span>
+              </template>
+            </menu-button>
+            <template if="hasSubItems">
+              <menu-sub>
+                <template for="subItem of (isOpen ? item.items : [])">
+                  <menu-subitem :key="subItem.id">
+                    <menu-subbutton>{{subItem.title}}</menu-subbutton>
+                  </menu-subitem>
+                </template>
+              </menu-sub>
+            </template>
+          </menu-item>
+        </template>
+      </menu-container>
+    </div>
+  </div>
+
+  <script setup>
+    import { defineProp } from "@li3/web";
+
+    export default function fileNav() {
+      const items = defineProp("items");
+
+      const { openStates, toggleSubmenu } = useSubmenuState();
+      const hasSubItems = (item) => item.items && item.items.length > 0;
+      const isOpen = (item) => openStates[item.id];
+
+      return { items, hasSubItems, isOpen };
+    }
+  </script>
+</template>

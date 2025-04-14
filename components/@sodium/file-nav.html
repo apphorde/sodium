@@ -1,0 +1,64 @@
+<template>
+  <template component="file-navitem">
+    <li>
+      <button
+        class="flex w-full items-center px-4 py-2 text-sm rounded-md hover:bg-gray-100"
+        class-font-semibold="hasSubItems(item)"
+        on-click="toggleSubmenu(item)">
+        <span>${item.title}</span>
+        <template if="hasSubItems(item)">
+          <span class="ml-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="h-4 w-4 transform" class--rotate-90="item.isOpen">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </template>
+      </button>
+      <template if="hasSubItems(item) && item.isOpen">
+        <ul class="pl-4 mt-1 space-y-1">
+          <template for="subItem of item.items">
+            <menu-item class="contents" :item="subItem"></menu-item>
+          </template>
+        </ul>
+      </template>
+    </li>
+  </template>
+
+  <div
+    ref="cardSidenav"
+    class="w-64 rounded-lg border bg-white text-gray-900 shadow-sm"
+  >
+    <div class="px-4 py-2 border-b">
+      <h2 class="text-lg font-semibold">Menu</h2>
+    </div>
+    <div class="py-2">
+      <ul ref="sidebarMenu" class="space-y-1">
+        <template for="item of items">
+          <menu-item :item="item"></menu-item>
+        </template>
+      </ul>
+    </div>
+  </div>
+
+  <script setup="">
+    import { defineProp } from '@li3/web';
+
+    // Sample menu items data
+
+    // State to track open/closed submenus
+    const openStates = ref({});
+
+    function toggleSubmenu(item) {
+      item.isOpen = !item.isOpen;
+    }
+
+    const hasSubItems = (item) => item.items && item.items.length > 0;
+
+    // Render the entire menu
+
+    // Initial render
+    renderMenu();
+  </script>
+</template>
