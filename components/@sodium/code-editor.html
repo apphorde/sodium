@@ -83,6 +83,8 @@
     loadScript,
   } from "@li3/web";
 
+  import { observer } from '@li3/reactive';
+
   const NEWLINE = "\n";
   const SPACE = " ";
   const SPACES = "  ";
@@ -296,14 +298,15 @@
 
   const syncValue = debounce(onUpdate, 10);
 
-  props.value.watch((v) => {
+  observer(props.value, () => {
+    const v = props.value.value;
     if (getSource() !== v) {
       updateSource(v);
       onUpdate();
     }
   });
 
-  props.language.watch((v) => updatePreview(getSource()));
+  observer(props.language, () => updatePreview(getSource()));
 
   onInit(() => {
     onUpdate();
