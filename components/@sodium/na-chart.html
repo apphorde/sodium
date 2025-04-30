@@ -5,6 +5,7 @@
 <script setup>
   import { Chart } from "https://unpkg.com/frappe-charts@1.6.1/dist/frappe-charts.esm.js";
   import { ref, defineProps, onInit } from "@li3/web";
+  import { observer } from '@li3/reactive';
 
   const emptyChart = { labels: [], datasets: [] };
   const props = defineProps(["inputs", "type", "options"]);
@@ -25,7 +26,7 @@
     chart.update(props.inputs.value || emptyChart);
   }
 
-  props.inputs.watch(onRender);
-  props.type.watch(onRender);
-  props.options.watch(onRender);
+  observer(inputs, onRender);
+  observer(type, onRender);
+  observer(options, onRender);
 </script>
