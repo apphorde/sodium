@@ -4,29 +4,30 @@
 
 <script setup>
   import { Chart } from "https://unpkg.com/frappe-charts@1.6.1/dist/frappe-charts.esm.js";
-  import { ref, defineProps, onInit } from "@li3/web";
-  import { observer } from '@li3/reactive';
+  import { shallowRef, ref, defineProp, watch, onInit } from "@li3/web";
 
   const emptyChart = { labels: [], datasets: [] };
-  const props = defineProps(["inputs", "type", "options"]);
+  const inputs = defineProp("inputs");
+  const type = defineProp("type");
+  const options = defineProp("options");
   const chartRef = ref(null);
-  let chart;
+  const chart = shallowRef(null);
 
   onInit(() => {
-    chart = new Chart(chartRef.value, {
-      data: props.inputs.value || emptyChart,
-      type: props.type.value || "line",
-      ...(props.options.value || {}),
+    chart.value = new Chart(chartRef.value, {
+      data: inputs.value || emptyChart,
+      type: type.value || "line",
+      ...(options.value || {}),
     });
   });
 
   function onRender() {
-    if (!chart) return;
+    if (!chart.value) return;
 
-    chart.update(props.inputs.value || emptyChart);
+    chart.value.update(inputs.value || emptyChart);
   }
 
-  observer(props.inputs, onRender);
-  observer(props.type, onRender);
-  observer(props.options, onRender);
+  watch(inputs, onRender);
+  watch(type, onRender);
+  watch(options, onRender);
 </script>
