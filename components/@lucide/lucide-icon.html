@@ -1,10 +1,9 @@
 <template>
-  <span ref="svg"
-    attr-aria-label="label"></span>
+  <span ref="svg" attr-aria-label="label"></span>
 </template>
 <script setup>
   import { onInit, onUpdate, ref, defineProps } from "@li3/web";
-  import { loadIcon } from '@lucide/icon-loader';
+  import { loadIcon } from "@lucide/icon-loader";
 
   const svg = ref(null);
   const props = defineProps(["icon", "iconClasses", "label", "size"]);
@@ -22,20 +21,19 @@
     try {
       const node = await loadIcon(icon);
       svg.value.appendChild(node);
+      if (props.iconClasses.value) {
+        node.className.baseVal = props.iconClasses.value;
+      }
+
+      if (props.size.value) {
+        const size = String(props.size.value);
+        node.setAttribute("width", size);
+        node.setAttribute("height", size);
+      }
     } catch {
       const node = document.createElement("span");
       node.innerText = "icon missing: " + name;
       svg.value.appendChild(node);
-    }
-
-    if (props.iconClasses.value) {
-      node.className.baseVal = props.iconClasses.value;
-    }
-
-    if (props.size.value) {
-      const size = String(props.size.value);
-      node.setAttribute('width', size);
-      node.setAttribute('height', size);
     }
   }
 
