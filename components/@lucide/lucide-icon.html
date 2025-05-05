@@ -4,36 +4,10 @@
 </template>
 <script setup>
   import { onInit, onUpdate, ref, defineProps } from "@li3/web";
+  import { loadIcon } from '@lucide/icon-loader';
 
   const svg = ref(null);
   const props = defineProps(["icon", "iconClasses", "label", "size"]);
-
-  let ce;
-
-  async function createElement(name) {
-    if (!ce) {
-      const mod = await import(
-        "https://unpkg.com/lucide@latest/dist/esm/createElement.js"
-      );
-      ce = mod.default;
-    }
-
-    return ce(name);
-  }
-
-  async function loadIcon(name) {
-    try {
-      const mod = await import(
-        `https://unpkg.com/lucide@latest/dist/esm/icons/${name}.js`
-      );
-      const icon = mod.default;
-      return createElement(icon);
-    } catch {
-      const node = document.createElement("span");
-      node.innerText = "icon missing: " + name;
-      return node;
-    }
-  }
 
   async function update() {
     const icon = props.icon.value;
@@ -43,9 +17,16 @@
       return;
     }
 
-    const node = await loadIcon(icon);
     svg.value.innerHTML = "";
-    svg.value.appendChild(node);
+
+    try {
+      const node = await loadIcon(icon);
+      svg.value.appendChild(node);
+    } catch {
+      const node = document.createElement("span");
+      node.innerText = "icon missing: " + name;
+      svg.value.appendChild(node);
+    }
 
     if (props.iconClasses.value) {
       node.className.baseVal = props.iconClasses.value;
