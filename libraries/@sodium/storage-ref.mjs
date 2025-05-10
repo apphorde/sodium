@@ -1,10 +1,12 @@
-import { valueRef } from "@li3/reactive";
+import { signal, effect } from "@li3/reactive";
 
 function storageRef(type, name, initialValue) {
   const backend = type === "session" ? sessionStorage : localStorage;
   const key = `$ref$${name}`;
   const previousValue = backend.getItem(key);
-  const $ = valueRef(undefined, () => {
+  const $ = signal(undefined);
+  
+  effect(() => {
     const v = JSON.stringify($.value);
 
     if (backend.getItem(key) !== v) {
