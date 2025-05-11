@@ -7,6 +7,7 @@
 
   const svg = ref(null);
   const props = defineProps(["icon", "iconClasses", "label", "size"]);
+  const cache = {};
 
   async function update() {
     const icon = props.icon.value;
@@ -19,8 +20,13 @@
     svg.value.innerHTML = "";
 
     try {
-      const node = await loadIcon(icon);
-      svg.value.appendChild(node);
+      if (!cache[icon]) {
+        cache[icon] = loadIcon(icon);
+      }
+
+      const node = await cache[icon];
+      svg.value.appendChild(node.cloneNode(true));
+
       if (props.iconClasses.value) {
         node.className.baseVal = props.iconClasses.value;
       }
