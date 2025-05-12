@@ -2,10 +2,10 @@
   <span ref="svg" attr-aria-label="label"></span>
 </template>
 <script setup>
-  import { onInit, onUpdate, ref, defineProps } from "@li3/web";
+  import { onInit, onUpdate, templateRef, defineProps } from "@li3/web";
   import { loadIcon } from "@lucide/icon-loader";
 
-  const svg = ref(null);
+  const svg = templateRef(null);
   const props = defineProps(["icon", "iconClasses", "label", "size"]);
   const cache = {};
 

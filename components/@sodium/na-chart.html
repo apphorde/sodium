@@ -4,13 +4,13 @@
 
 <script setup>
   import { Chart } from "https://unpkg.com/frappe-charts@1.6.1/dist/frappe-charts.esm.js";
-  import { shallowRef, ref, defineProp, watch, onInit } from "@li3/web";
+  import { shallowRef, templateRef, ref, defineProp, watch, onInit } from "@li3/web";
 
   const emptyChart = { labels: [], datasets: [] };
   const inputs = defineProp("inputs");
   const type = defineProp("type");
   const options = defineProp("options");
-  const chartRef = ref(null);
+  const chartRef = templateRef(null);
   const chart = shallowRef(null);
 
   onInit(() => {

@@ -4,8 +4,8 @@
 </template>
 
 <script setup>
-  import { ref, materialize, html } from "@li3/web";
-  const output = ref(null);
+  import { templateRef, materialize, html } from "@li3/web";
+  const output = templateRef(null);
 
   const fn = (...args) => {
     output.value.append(tpl(`<div>${args.map(JSON.stringify).join(",")}</div>`).contents);

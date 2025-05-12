@@ -1,10 +1,10 @@
 <script setup="">
-  import { onInit, defineProp, ref } from "@li3/web";
+  import { onInit, defineProp, templateRef, ref } from "@li3/web";
   import { observer } from '@li3/reactive';
   import "@sodium/select-viewport";
 
   const source = defineProp("source");
-  const frame = ref(null);
+  const frame = templateRef(null);
   const deviceSize = ref("desktop");
   const deviceWidth = ref("100%");
 

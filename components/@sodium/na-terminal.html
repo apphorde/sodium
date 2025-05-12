@@ -4,7 +4,7 @@
 
 <script setup>
   import {
-    ref,
+    templateRef,
     defineProps,
     defineEvents,
     onInit,
@@ -12,11 +12,11 @@
     loadCss,
   } from "@li3/web";
 
-  const terminalRef = ref(null);
+  const terminalRef = templateRef(null);
   const terminal = new window.Terminal({ convertEol: true });
   const fitAddon = new window.FitAddon.FitAddon();
   const emit = defineEvents(["ready", "data", "resize"]);
-  const controller = defineProp('controller', null);
+  const controller = defineProp("controller", null);
 
   function onResize() {
     fitAddon.fit();

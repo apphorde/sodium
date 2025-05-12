@@ -76,21 +76,21 @@
 <script setup="">
   import {
     ref,
+    templateRef,
     defineEvents,
     defineProps,
     onInit,
     loadCss,
     loadScript,
+    watch,
   } from "@li3/web";
-
-  import { observer } from '@li3/reactive';
 
   const NEWLINE = "\n";
   const SPACE = " ";
   const SPACES = "  ";
-  const preview = ref(null);
-  const source = ref(null);
-  const styles = ref(null);
+  const preview = templateRef(null);
+  const source = templateRef(null);
+  const styles = templateRef(null);
   const lineNumbers = ref("");
   const positionLine = ref(0);
   const positionColumn = ref(0);
@@ -298,7 +298,7 @@
 
   const syncValue = debounce(onUpdate, 10);
 
-  observer(props.value, () => {
+  watch(props.value, () => {
     const v = props.value.value;
     if (getSource() !== v) {
       updateSource(v);
@@ -306,7 +306,7 @@
     }
   });
 
-  observer(props.language, () => updatePreview(getSource()));
+  watch(props.language, () => updatePreview(getSource()));
 
   onInit(() => {
     onUpdate();
