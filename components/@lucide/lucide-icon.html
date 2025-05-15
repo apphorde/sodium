@@ -5,6 +5,7 @@
   import { effect, templateRef, defineProp } from "@li3/web";
   import { loadIcon } from "@lucide/icon-loader";
 
+  const cache = {};
   const svg = templateRef(null);
   const icon = defineProp("icon");
   const iconClasses = defineProp("iconClasses");
@@ -13,10 +14,9 @@
   const hasProps = effect(
     () => icon.value + iconClasses.value + label.value + size.value
   );
-  const cache = {};
 
   effect(async function update() {
-    if (!hasProps.value) return;
+    if (!hasProps.value || !svg.value) return;
 
     svg.value.innerHTML = "";
 
