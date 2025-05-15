@@ -1,5 +1,5 @@
 <template>
-  <span ref="svg" attr-aria-label="label"></span>
+  <span ref="svg" attr-aria-label="label || ''"></span>
 </template>
 <script setup>
   import { effect, templateRef, defineProp } from "@li3/web";
@@ -31,16 +31,17 @@
     }
 
     const node = await cache[newIcon];
-    svg.value.appendChild(node.cloneNode(true));
+    const svgIcon = node.cloneNode(true);
+    svg.value.appendChild(svgIcon);
 
     if (iconClasses.value) {
-      node.className.baseVal = iconClasses.value;
+      svgIcon.className.baseVal = iconClasses.value;
     }
 
     if (size.value) {
       const s = String(size.value);
-      node.setAttribute("width", s);
-      node.setAttribute("height", s);
+      svgIcon.setAttribute("width", s);
+      svgIcon.setAttribute("height", s);
     }
   });
 </script>
