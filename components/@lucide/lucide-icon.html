@@ -6,46 +6,41 @@
   import { loadIcon } from "@lucide/icon-loader";
 
   const svg = templateRef(null);
-
   const icon = defineProp("icon");
   const iconClasses = defineProp("iconClasses");
   const label = defineProp("label");
   const size = defineProp("size");
+  const hasProps = effect(
+    () => icon.value + iconClasses.value + label.value + size.value
+  );
   const cache = {};
 
   effect(async function update() {
-    const hasProps = icon.value + iconClasses.value + label.value + size.value;
-
-    if (!hasProps) return;
+    if (!hasProps.value) return;
 
     svg.value.innerHTML = "";
+
     const newIcon = icon.value;
 
     if (!newIcon?.trim()) {
       return;
     }
 
-    try {
-      if (!cache[newIcon]) {
-        cache[newIcon] = loadIcon(newIcon);
-      }
+    if (!cache[newIcon]) {
+      cache[newIcon] = loadIcon(newIcon);
+    }
 
-      const node = await cache[newIcon];
-      svg.value.appendChild(node.cloneNode(true));
+    const node = await cache[newIcon];
+    svg.value.appendChild(node.cloneNode(true));
 
-      if (iconClasses.value) {
-        node.className.baseVal = iconClasses.value;
-      }
+    if (iconClasses.value) {
+      node.className.baseVal = iconClasses.value;
+    }
 
-      if (size.value) {
-        const size = String(size.value);
-        node.setAttribute("width", size);
-        node.setAttribute("height", size);
-      }
-    } catch {
-      const node = document.createElement("span");
-      node.innerText = `[${newIcon}]`;
-      svg.value.appendChild(node);
+    if (size.value) {
+      const size = String(size.value);
+      node.setAttribute("width", size);
+      node.setAttribute("height", size);
     }
   });
 </script>
