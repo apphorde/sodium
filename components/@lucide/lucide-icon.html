@@ -19,31 +19,32 @@
     if (!hasProps) return;
 
     svg.value.innerHTML = "";
+    const newIcon = icon.value;
 
-    if (!icon?.trim()) {
+    if (!newIcon?.trim()) {
       return;
     }
 
     try {
-      if (!cache[icon]) {
-        cache[icon] = loadIcon(icon);
+      if (!cache[newIcon]) {
+        cache[newIcon] = loadIcon(newIcon);
       }
 
-      const node = await cache[icon];
+      const node = await cache[newIcon];
       svg.value.appendChild(node.cloneNode(true));
 
-      if (props.iconClasses.value) {
-        node.className.baseVal = props.iconClasses.value;
+      if (iconClasses.value) {
+        node.className.baseVal = iconClasses.value;
       }
 
-      if (props.size.value) {
-        const size = String(props.size.value);
+      if (size.value) {
+        const size = String(size.value);
         node.setAttribute("width", size);
         node.setAttribute("height", size);
       }
     } catch {
       const node = document.createElement("span");
-      node.innerText = "icon missing: " + icon.value;
+      node.innerText = `[${newIcon}]`;
       svg.value.appendChild(node);
     }
   });
