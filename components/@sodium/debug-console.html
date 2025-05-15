@@ -1,6 +1,5 @@
 <template shadowdom="open">
-  <div class="console"
-    ref="output"></div>
+  <div class="console" ref="output"></div>
 </template>
 
 <script setup>
@@ -8,7 +7,9 @@
   const output = templateRef(null);
 
   const fn = (...args) => {
-    output.value.append(tpl(`<div>${args.map(JSON.stringify).join(",")}</div>`).contents);
+    output.value.append(
+      html(`<div>${args.map(JSON.stringify).join(",")}</div>`).contents
+    );
   };
 
   window.console.log = fn;

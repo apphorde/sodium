@@ -2,22 +2,27 @@
   <span ref="svg" attr-aria-label="label"></span>
 </template>
 <script setup>
-  import { onInit, onUpdate, templateRef, defineProps } from "@li3/web";
+  import { effect, templateRef, defineProp } from "@li3/web";
   import { loadIcon } from "@lucide/icon-loader";
 
   const svg = templateRef(null);
-  const props = defineProps(["icon", "iconClasses", "label", "size"]);
+
+  const icon = defineProp("icon");
+  const iconClasses = defineProp("iconClasses");
+  const label = defineProp("label");
+  const size = defineProp("size");
   const cache = {};
 
-  async function update() {
-    const icon = props.icon.value;
+  effect(async function update() {
+    const hasProps = icon.value + iconClasses.value + label.value + size.value;
 
-    if (!icon?.trim()) {
-      svg.value.innerHTML = "";
-      return;
-    }
+    if (!hasProps) return;
 
     svg.value.innerHTML = "";
+
+    if (!icon?.trim()) {
+      return;
+    }
 
     try {
       if (!cache[icon]) {
@@ -38,11 +43,8 @@
       }
     } catch {
       const node = document.createElement("span");
-      node.innerText = "icon missing: " + name;
+      node.innerText = "icon missing: " + icon.value;
       svg.value.appendChild(node);
     }
-  }
-
-  onInit(update);
-  onUpdate(update);
+  });
 </script>
