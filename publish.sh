@@ -1,4 +1,6 @@
-set -xe
+set -e
+
+npm i @node-lambdas/cli
 
 export baseDir=components
 export PATH="./node_modules/.bin:$PATH"
