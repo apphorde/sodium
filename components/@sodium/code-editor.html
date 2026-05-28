@@ -1,4 +1,4 @@
-<template shadow-dom="open">
+<template shadow-dom="open" component="code-editor">
   <div class="flex flex-col w-full h-full">
     <div class="flex w-full h-full">
       <div class="line-numbers">{{ lineNumbers }}</div>
@@ -313,14 +313,14 @@
   });
 
   loadCss(
-    "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css",
   );
 
   loadCss(
-    "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css"
+    "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css",
   );
 
   loadScript(
-    "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js"
+    "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js",
   );
 </script>

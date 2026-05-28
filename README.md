@@ -15,25 +15,24 @@ Then load the components you want to use in your page:
     <script type="importmap">
       {
         "imports": {
-          "@li3/": "https://at-li3.static.apphor.de/",
-          "@sodium/": "https://at-sodium.static.apphor.de/",
+          "@li3/": "https://at-li3.static.apphor.de/"
         }
       }
     </script>
     <script type="module">
-      import '@sodium/code-editor';
-      import '@sodium/select-viewport';
+      import { load } from "@li3/web";
 
-      window.viewportMap = {
-        desktop: "100%",
-        tablet: "1024px",
-        mobile: "640px",
-      }
+      load("https://at-sodium.static.apphor.de/code-editor");
+      load("https://at-sodium.static.apphor.de/select-viewport");
     </script>
   </head>
   <body>
-    <select-viewport onselect="editor.style.width = window.viewportMap[event.detail]"></select-viewport>
-    <code-editor id="editor"></code-editor>
+    <template app>
+      <select-viewport
+        onselect="editor.style.width = viewportMap[event.detail]"
+      ></select-viewport>
+      <code-editor id="editor"></code-editor>
+    </template>
   </body>
 </html>
 ```
