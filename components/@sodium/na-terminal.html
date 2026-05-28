@@ -5,8 +5,8 @@
 <script setup>
   import {
     templateRef,
-    defineProps,
-    defineEvents,
+    defineProp,
+    defineEvent,
     onInit,
     onDestroy,
     loadCss,
@@ -15,8 +15,10 @@
   const terminalRef = templateRef(null);
   const terminal = new window.Terminal({ convertEol: true });
   const fitAddon = new window.FitAddon.FitAddon();
-  const emit = defineEvents(["ready", "data", "resize"]);
-  const controller = defineProp("controller", null);
+  const onReady = defineEvent("ready");
+  const emitResize = defineEvent("resize");
+  const onData = defineEvent("data");
+  const controller = defineProp("controller", { default: null });
 
   function onResize() {
     fitAddon.fit();
@@ -25,8 +27,8 @@
   onInit(() => {
     terminal.loadAddon(fitAddon);
     terminal.open(terminalRef.value);
-    terminal.onData((c) => emit("data", c));
-    terminal.onResize(({ cols, rows }) => emit("resize", { cols, rows }));
+    terminal.onData((c) => onData(c));
+    terminal.onResize(({ cols, rows }) => emitResize({ cols, rows }));
 
     if (controller.value) {
       const c = controller.value;
@@ -36,7 +38,7 @@
     }
 
     window.addEventListener("resize", onResize);
-    emit("ready", terminal);
+    onReady(terminal);
   });
 
   onDestroy(() => {

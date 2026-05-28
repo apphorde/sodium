@@ -3,7 +3,7 @@
     <button
       class="shrink-0 items-center justify-center whitespace-nowrap text-sm font-medium transition-colors hover:bg-gray-100 h-6 gap-1 rounded-sm py-1 text-gray-900 w-6 hidden lg:flex"
       class-bg-gray-100.text-gray-900="value.value === 'desktop'"
-      on-click="emit('select', 'desktop')">
+      on-click="emit('desktop')">
       <span class="sr-only">Desktop</span><svg xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -35,7 +35,7 @@
     <button
       class="shrink-0 items-center justify-center whitespace-nowrap text-sm font-medium transition-colors hover:bg-gray-100 h-6 gap-1 rounded-sm py-1 text-gray-900 w-6 hidden lg:flex"
       class-bg-gray-100.text-gray-900="value.value === 'tablet'"
-      on-click="emit('select', 'tablet')">
+      on-click="emit('tablet')">
       <span class="sr-only">Tablet</span><svg xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -64,7 +64,7 @@
     <button
       class="shrink-0 items-center justify-center whitespace-nowrap text-sm font-medium transition-colors hover:bg-gray-100 h-6 gap-1 rounded-sm py-1 text-gray-900 w-6 hidden lg:flex"
       class-bg-gray-100.text-gray-900="value.value === 'mobile'"
-      on-click="emit('select', 'mobile')">
+      on-click="emit('mobile')">
       <span class="sr-only">Mobile</span><svg xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -88,7 +88,7 @@
 </template>
 
 <script setup="">
-  import { defineEvents, defineProps } from '@li3/web';
-  const emit = defineEvents(["select"]);
+  import { defineEvent, defineProp } from '@li3/web';
+  const emit = defineEvent("select");
   defineProp("value");
 </script>
