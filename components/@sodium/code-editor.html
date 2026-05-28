@@ -74,15 +74,15 @@
 </style>
 
 <script setup="">
+  import "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js";
   import {
     ref,
+    watch,
     templateRef,
-    defineEvents,
-    defineProps,
+    defineEvent,
+    defineProp,
     onInit,
     loadCss,
-    loadScript,
-    watch,
   } from "@li3/web";
 
   const NEWLINE = "\n";
@@ -96,8 +96,12 @@
   const positionColumn = ref(0);
   const positionSelection = ref(0);
   const positionLineCount = ref(0);
-  const emit = defineEvents(["change"]);
-  const props = defineProps(["name", "value", "language"]);
+  const onChange = defineEvent("change");
+  const props = {
+    name: defineProp('name'),
+    value: defineProp('value'),
+    language: defineProp('language'),
+  }
 
   function debounce(fn, time = 200) {
     let t = 0;
@@ -288,7 +292,7 @@
 
     updatePreview(code);
     syncScroll();
-    emit("change", code);
+    onChange(code);
   }
 
   function syncScroll() {
@@ -318,9 +322,5 @@
 
   loadCss(
     "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css",
-  );
-
-  loadScript(
-    "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js",
   );
 </script>
