@@ -1,4 +1,5 @@
-set -e
+set -xe
+
 export baseDir=components
 export PATH="./node_modules/.bin:$PATH"
 
@@ -7,8 +8,7 @@ for scope in $(ls -1 $baseDir); do
   for component in $(ls -1 $baseDir/$scope); do
     name=$(echo $component | sed s/.html//)
     echo -n "Publishing $scope/$name... "
-    cat $baseDir/$scope/$component | curl -sS --fail -H "Authorization: $CDN_API_KEY" $CDN_API_URL/component/$scope/$name.html@0.0.0 --data-binary @-
-    echo 'import {load} from "@li3/web";export default load(new URL("./'$name'.html", import.meta.url))' | curl -sS --fail -H "Authorization: $CDN_API_KEY" $CDN_API_URL/component/$scope/$name@0.0.0 --data-binary @-
+    node wrapper.mjs $baseDir/$scope/$component | curl -sS --fail -H "Authorization: $CDN_API_KEY" $CDN_API_URL/component/$scope/$name@0.0.0 --data-binary @-
   done
 done
 

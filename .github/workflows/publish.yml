@@ -7,16 +7,14 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      CI: true
     permissions:
       contents: read
       id-token: write
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Prepare environment
-        run: |
-          npm i @li3/sfc @node-lambdas/cli
 
       - name: Publish to AppHorde Registry
         env:
