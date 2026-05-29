@@ -1,24 +1,26 @@
 <template shadow-dom="open" component="markdown-block">
   <slot></slot>
+
+  <script setup>
+    import { onInit } from "@li3/web";
+    import markdown from "https://markdown.jsfn.run/index.mjs";
+
+    onInit(async function ({ element }) {
+      const source =
+        (
+          element.querySelector("pre") ||
+          element.shadowRoot.querySelector("slot")
+        ).innerHTML.trim() || "";
+
+      if (!source) return;
+
+      try {
+        const html = await markdown(source);
+        element.innerHTML = html || source;
+      } catch (error) {
+        console.error(error);
+        element.innerHTML = source;
+      }
+    });
+  </script>
 </template>
-<script setup>
-  import { onInit } from "@li3/web";
-  import markdown from "https://markdown.jsfn.run/index.mjs";
-
-  onInit(async function ({ element }) {
-    const source =
-      (
-        element.querySelector("pre") || element.shadowRoot.querySelector("slot")
-      ).innerHTML.trim() || "";
-
-    if (!source) return;
-
-    try {
-      const html = await markdown(source);
-      element.innerHTML = html || source;
-    } catch (error) {
-      console.error(error);
-      element.innerHTML = source;
-    }
-  });
-</script>

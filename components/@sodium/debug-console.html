@@ -1,27 +1,27 @@
 <template shadowdom="open">
   <div class="console" ref="output"></div>
+
+  <script setup>
+    import { templateRef, materialize, html } from "@li3/web";
+    const output = templateRef(null);
+
+    const fn = (...args) => {
+      output.value.append(
+        html(`<div>${args.map(JSON.stringify).join(",")}</div>`).contents,
+      );
+    };
+
+    window.console.log = fn;
+    window.console.info = fn;
+    window.console.error = fn;
+  </script>
+
+  <style>
+    .console {
+      padding: 1rem;
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 12px;
+    }
+  </style>
 </template>
-
-<script setup>
-  import { templateRef, materialize, html } from "@li3/web";
-  const output = templateRef(null);
-
-  const fn = (...args) => {
-    output.value.append(
-      html(`<div>${args.map(JSON.stringify).join(",")}</div>`).contents
-    );
-  };
-
-  window.console.log = fn;
-  window.console.info = fn;
-  window.console.error = fn;
-</script>
-
-<style>
-  .console {
-    padding: 1rem;
-    white-space: pre-wrap;
-    font-family: monospace;
-    font-size: 12px;
-  }
-</style>

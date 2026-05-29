@@ -1,42 +1,47 @@
-<script setup="">
-  import { onInit, defineProp, templateRef, ref } from "@li3/web";
-  import { observer } from '@li3/reactive';
-  import "@sodium/select-viewport";
-
-  const source = defineProp("source");
-  const frame = templateRef(null);
-  const deviceSize = ref("desktop");
-  const deviceWidth = ref("100%");
-
-  const sizeTable = {
-    desktop: "100%",
-    tablet: "1024px",
-    mobile: "640px",
-  };
-
-  function setDeviceSize(value) {
-    deviceSize.value = value;
-    deviceWidth.value = sizeTable[value];
-  }
-
-  function updatePreview() {
-    frame.value.innerHTML = source.value;
-  }
-
-  loadCss(
-    "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
-  );
-
-  observer(source, updatePreview);
-</script>
-
 <template shadow-dom="open">
   <div class="bg-gray-200 p-1 h-full flex flex-col items-center">
-    <select-viewport class="mb-2"
+    <select-viewport
+      class="mb-2"
       bind-value="deviceSize"
-      on-select="setDeviceSize($event.detail)"></select-viewport>
-    <div ref="frame"
+      on-select="setDeviceSize($event.detail)"
+    ></select-viewport>
+    <div
+      ref="frame"
       class="h-full bg-white mx-auto rounded border-gray-400"
-      style-width="deviceWidth"></div>
+      style-width="deviceWidth"
+    ></div>
   </div>
+
+  <script setup="">
+    import "@sodium/select-viewport";
+    import { onInit, defineProp, templateRef, ref, watch } from "@li3/web";
+
+    export default function () {
+      const source = defineProp("source");
+      const frame = templateRef("frame");
+      const deviceSize = ref("desktop");
+      const deviceWidth = ref("100%");
+
+      const sizeTable = {
+        desktop: "100%",
+        tablet: "1024px",
+        mobile: "640px",
+      };
+
+      function setDeviceSize(value) {
+        deviceSize.value = value;
+        deviceWidth.value = sizeTable[value];
+      }
+
+      function updatePreview() {
+        frame.value.innerHTML = source.value;
+      }
+
+      loadCss(
+        "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css",
+      );
+
+      watch(source, updatePreview);
+    }
+  </script>
 </template>

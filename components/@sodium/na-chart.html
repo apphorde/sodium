@@ -1,33 +1,40 @@
 <template shadow-dom="open">
   <div ref="chartRef"></div>
-</template>
 
-<script setup>
-  import { Chart } from "https://unpkg.com/frappe-charts@1.6.1/dist/frappe-charts.esm.js";
-  import { shallowRef, templateRef, ref, defineProp, watch, onInit } from "@li3/web";
+  <script setup>
+    import { Chart } from "https://unpkg.com/frappe-charts@1.6.1/dist/frappe-charts.esm.js";
+    import {
+      shallowRef,
+      templateRef,
+      ref,
+      defineProp,
+      watch,
+      onInit,
+    } from "@li3/web";
 
-  const emptyChart = { labels: [], datasets: [] };
-  const inputs = defineProp("inputs");
-  const type = defineProp("type");
-  const options = defineProp("options");
-  const chartRef = templateRef(null);
-  const chart = shallowRef(null);
+    const emptyChart = { labels: [], datasets: [] };
+    const inputs = defineProp("inputs");
+    const type = defineProp("type");
+    const options = defineProp("options");
+    const chartRef = templateRef(null);
+    const chart = shallowRef(null);
 
-  onInit(() => {
-    chart.value = new Chart(chartRef.value, {
-      data: inputs.value || emptyChart,
-      type: type.value || "line",
-      ...(options.value || {}),
+    onInit(() => {
+      chart.value = new Chart(chartRef.value, {
+        data: inputs.value || emptyChart,
+        type: type.value || "line",
+        ...(options.value || {}),
+      });
     });
-  });
 
-  function onRender() {
-    if (!chart.value) return;
+    function onRender() {
+      if (!chart.value) return;
 
-    chart.value.update(inputs.value || emptyChart);
-  }
+      chart.value.update(inputs.value || emptyChart);
+    }
 
-  watch(inputs, onRender);
-  watch(type, onRender);
-  watch(options, onRender);
-</script>
+    watch(inputs, onRender);
+    watch(type, onRender);
+    watch(options, onRender);
+  </script>
+</template>
