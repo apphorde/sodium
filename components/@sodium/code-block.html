@@ -9,20 +9,22 @@
     import { templateRef, defineProp, onInit, getElement } from "@li3/web";
     import "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js";
 
-    const source = defineProp("source");
-    const language = defineProp("language");
-    const preview = templateRef("preview");
+    export default function () {
+      const source = defineProp("source");
+      const language = defineProp("language");
+      const preview = templateRef("preview");
 
-    loadCss(
-      "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css",
-    );
+      loadCss(
+        "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css",
+      );
 
-    onInit(function () {
-      const element = getElement();
-      const src = source.value || element.innerHTML.trim() || "";
-      const language = language.value || "";
-      preview.value.innerHTML =
-        window.hljs?.highlight(language, src).value || src;
-    });
+      onInit(function () {
+        const element = getElement();
+        const src = source.value || element.innerHTML.trim() || "";
+        const language = language.value || "";
+        preview.value.innerHTML =
+          window.hljs?.highlight(language, src).value || src;
+      });
+    }
   </script>
 </template>

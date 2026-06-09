@@ -3,17 +3,20 @@
 
   <script setup>
     import { templateRef, materialize, html } from "@li3/web";
-    const output = templateRef("output");
 
-    const fn = (...args) => {
-      output.value.append(
-        html(`<div>${args.map(JSON.stringify).join(",")}</div>`).contents,
-      );
-    };
+    export default function () {
+      const output = templateRef("output");
 
-    window.console.log = fn;
-    window.console.info = fn;
-    window.console.error = fn;
+      const fn = (...args) => {
+        output.value.append(
+          html(`<div>${args.map(JSON.stringify).join(",")}</div>`).contents,
+        );
+      };
+
+      window.console.log = fn;
+      window.console.info = fn;
+      window.console.error = fn;
+    }
   </script>
 
   <style>

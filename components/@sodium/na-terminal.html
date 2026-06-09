@@ -1,5 +1,5 @@
-<template shadowdom="open" component="na-terminal">
-  <div ref="terminalRef"></div>
+<template shadow-dom="open" component="na-terminal">
+  <div ref="terminal"></div>
 
   <script setup>
     import {
@@ -11,39 +11,43 @@
       loadCss,
     } from "@li3/web";
 
-    const terminalRef = templateRef(null);
-    const terminal = new window.Terminal({ convertEol: true });
-    const fitAddon = new window.FitAddon.FitAddon();
-    const onReady = defineEvent("ready");
-    const emitResize = defineEvent("resize");
-    const onData = defineEvent("data");
-    const controller = defineProp("controller", { default: null });
+    export default function () {
+      const terminalRef = templateRef("terminal");
+      const terminal = new window.Terminal({ convertEol: true });
+      const fitAddon = new window.FitAddon.FitAddon();
+      const onReady = defineEvent("ready");
+      const emitResize = defineEvent("resize");
+      const onData = defineEvent("data");
+      const controller = defineProp("controller", { default: null });
 
-    function onResize() {
-      fitAddon.fit();
-    }
-
-    onInit(() => {
-      terminal.loadAddon(fitAddon);
-      terminal.open(terminalRef.value);
-      terminal.onData((c) => onData(c));
-      terminal.onResize(({ cols, rows }) => emitResize({ cols, rows }));
-
-      if (controller.value) {
-        const c = controller.value;
-        c.addEventListener("data", (c) => terminal.write(c));
-        c.addEventListener("clear", () => terminal.clear());
-        c.addEventListener("resize", onResize);
+      function onResize() {
+        fitAddon.fit();
       }
 
-      window.addEventListener("resize", onResize);
-      onReady(terminal);
-    });
+      onInit(() => {
+        terminal.loadAddon(fitAddon);
+        terminal.open(terminalRef.value);
+        terminal.onData((c) => onData(c));
+        terminal.onResize(({ cols, rows }) => emitResize({ cols, rows }));
 
-    onDestroy(() => {
-      window.removeEventListener("resize", onResize);
-    });
+        if (controller.value) {
+          const c = controller.value;
+          c.addEventListener("data", (c) => terminal.write(c));
+          c.addEventListener("clear", () => terminal.clear());
+          c.addEventListener("resize", onResize);
+        }
 
-    loadCss("https://cdnjs.cloudflare.com/ajax/libs/xterm/5.5.0/xterm.min.css");
+        window.addEventListener("resize", onResize);
+        onReady(terminal);
+      });
+
+      onDestroy(() => {
+        window.removeEventListener("resize", onResize);
+      });
+
+      loadCss(
+        "https://cdnjs.cloudflare.com/ajax/libs/xterm/5.5.0/xterm.min.css",
+      );
+    }
   </script>
 </template>

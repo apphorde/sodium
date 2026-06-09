@@ -5,43 +5,45 @@
     import { computed, effect, templateRef, defineProp } from "@li3/web";
     import { loadIcon } from "@lucide/icon-loader";
 
-    const cache = {};
-    const svg = templateRef('svg');
-    const icon = defineProp("icon");
-    const iconClasses = defineProp("iconClasses");
-    const label = defineProp("label");
-    const size = defineProp("size");
+    export default function () {
+      const cache = {};
+      const svg = templateRef("svg");
+      const icon = defineProp("icon");
+      const iconClasses = defineProp("iconClasses");
+      const label = defineProp("label");
+      const size = defineProp("size");
 
-    computed(async function update() {
-      if (!icon.value) {
+      computed(async function update() {
+        if (!icon.value) {
+          svg.value.innerHTML = "";
+          return;
+        }
+
         svg.value.innerHTML = "";
-        return;
-      }
+        const newIcon = icon.value?.trim();
 
-      svg.value.innerHTML = "";
-      const newIcon = icon.value?.trim();
+        if (!newIcon) {
+          return;
+        }
 
-      if (!newIcon) {
-        return;
-      }
+        if (!cache[newIcon]) {
+          cache[newIcon] = loadIcon(newIcon);
+        }
 
-      if (!cache[newIcon]) {
-        cache[newIcon] = loadIcon(newIcon);
-      }
+        const node = await cache[newIcon];
+        const svgIcon = node.cloneNode(true);
+        svg.value.appendChild(svgIcon);
 
-      const node = await cache[newIcon];
-      const svgIcon = node.cloneNode(true);
-      svg.value.appendChild(svgIcon);
+        if (iconClasses.value) {
+          svgIcon.className.baseVal = iconClasses.value;
+        }
 
-      if (iconClasses.value) {
-        svgIcon.className.baseVal = iconClasses.value;
-      }
-
-      if (size.value) {
-        const s = String(size.value);
-        svgIcon.setAttribute("width", s);
-        svgIcon.setAttribute("height", s);
-      }
-    });
+        if (size.value) {
+          const s = String(size.value);
+          svgIcon.setAttribute("width", s);
+          svgIcon.setAttribute("height", s);
+        }
+      });
+    }
   </script>
 </template>

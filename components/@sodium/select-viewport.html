@@ -1,10 +1,10 @@
-<template>
+<template component="select-viewport">
   <div
     class="box-content flex h-6 items-center gap-2 rounded-md border border-gs-gray-alpha-400 bg-white p-1"
   >
     <button
       class="shrink-0 items-center justify-center whitespace-nowrap text-sm font-medium transition-colors hover:bg-gray-100 h-6 gap-1 rounded-sm py-1 text-gray-900 w-6 hidden lg:flex"
-      class-bg-gray-100.text-gray-900="value.value === 'desktop'"
+      class-bg-gray-100.text-gray-900="value === 'desktop'"
       on-click="emit('desktop')"
     >
       <span class="sr-only">Desktop</span
@@ -30,7 +30,7 @@
 
     <button
       class="shrink-0 items-center justify-center whitespace-nowrap text-sm font-medium transition-colors hover:bg-gray-100 h-6 gap-1 rounded-sm py-1 text-gray-900 w-6 hidden lg:flex"
-      class-bg-gray-100.text-gray-900="value.value === 'tablet'"
+      class-bg-gray-100.text-gray-900="value === 'tablet'"
       on-click="emit('tablet')"
     >
       <span class="sr-only">Tablet</span
@@ -55,7 +55,7 @@
 
     <button
       class="shrink-0 items-center justify-center whitespace-nowrap text-sm font-medium transition-colors hover:bg-gray-100 h-6 gap-1 rounded-sm py-1 text-gray-900 w-6 hidden lg:flex"
-      class-bg-gray-100.text-gray-900="value.value === 'mobile'"
+      class-bg-gray-100.text-gray-900="value === 'mobile'"
       on-click="emit('mobile')"
     >
       <span class="sr-only">Mobile</span
