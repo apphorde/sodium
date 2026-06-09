@@ -77,11 +77,15 @@
     </button>
   </div>
   <script setup="">
-    import { defineEvent, defineProp } from "@li3/web";
+    import { defineEvent, defineProp, loadCss } from "@li3/web";
 
     export default function () {
       const emit = defineEvent("select");
       defineProp("value");
+
+      loadCss(
+        "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css",
+      );
     }
   </script>
 </template>

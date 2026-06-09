@@ -9,13 +9,17 @@
   <p class="text-xs text-gray-500 mt-2">{{ label }}</p>
 
   <script setup>
-    import { defineProp } from "@li3/web";
+    import { defineProp, loadCss } from "@li3/web";
 
     export default function () {
       defineProp("value", { default: 100 });
       defineProp("max", { default: 100 });
       defineProp("color", { default: "" });
       defineProp("label", { default: "" });
+
+      loadCss(
+        "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css",
+      );
     }
   </script>
 </template>

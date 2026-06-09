@@ -65,10 +65,13 @@
   </div>
 
   <script setup>
-    import { defineProp } from "@li3/web";
+    import { defineProp, loadCss } from "@li3/web";
 
     export default function () {
       defineProp("items", { default: () => [] });
+      loadCss(
+        "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css",
+      );
     }
   </script>
 </template>
