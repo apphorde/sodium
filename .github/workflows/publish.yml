@@ -20,5 +20,7 @@ jobs:
         env:
           CDN_API_URL: ${{ secrets.CDN_API_URL }}
           CDN_API_KEY: ${{ secrets.CDN_API_KEY }}
+          DEPLOY_API_URL: ${{ secrets.DEPLOY_API_URL }}
+          DEPLOY_API_KEY: ${{ secrets.DEPLOY_API_KEY }}
         run: |
           bash publish.sh

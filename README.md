@@ -12,12 +12,13 @@ Then load the components you want to use in your page:
 ```html
 <html>
   <head>
-    <link rel="component" href="https://at-sodium.static.apphor.de/code-editor" />
-    <link rel="component" href="https://at-sodium.static.apphor.de/markdown-block" />
+    <link rel="component" href="https://sodium.static.apphor.de/code-editor.html" />
+    <link rel="component" href="https://sodium.static.apphor.de/markdown-block.html" />
     <script type="importmap">
       {
         "imports": {
           "@li3/": "https://at-li3.static.apphor.de/"
+          "@sodium/": "https://at-sodium.static.apphor.de/"
         }
       }
     </script>

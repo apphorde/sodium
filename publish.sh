@@ -6,14 +6,8 @@ export baseDir=components
 export PATH="./node_modules/.bin:$PATH"
 
 for scope in $(ls -1 $baseDir); do
-  echo "Entering $scope"
-  for component in $(ls -1 $baseDir/$scope); do
-    name=$(echo $component | sed s/.html//)
-    echo -n "Publishing $scope/$name wrapper... "
-    cat wrapper.mjs | curl -sS --fail -H "Authorization: $CDN_API_KEY" $CDN_API_URL/component/$scope/$name@latest --data-binary @-
-    echo -n "Publishing $scope/$name template... "
-    cat $baseDir/$scope/$component | curl -sS --fail -H "Authorization: $CDN_API_KEY" $CDN_API_URL/library/$scope/$name.html@latest --data-binary @-
-  done
+  echo "Publishing components from $scope"
+  tar -cz -f - -C $baseDir/$scope --exclude node_modules/ --exclude .git/ --exclude tmp/ . | curl -sS --output - -H 'Authorization: '$DEPLOY_API_KEY $DEPLOY_API_URL --data-binary @-
 done
 
 export baseDir=libraries
