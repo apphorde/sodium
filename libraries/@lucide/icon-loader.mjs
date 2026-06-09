@@ -14,7 +14,7 @@ export async function createElement(name) {
 export async function loadIcon(name) {
   try {
     const mod = await import(
-      `https://unpkg.com/lucide@latest/dist/esm/icons/${name}.js`
+      `https://unpkg.com/lucide@latest/dist/esm/icons/${name}.mjs`
     );
     const icon = mod.default;
     return createElement(icon);
