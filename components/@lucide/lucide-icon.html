@@ -13,37 +13,36 @@
       const label = defineProp("label");
       const size = defineProp("size");
 
-      computed(async function update() {
-        if (!icon.value) {
+      // links update() to the reactive values of these refs
+      effect(
+        () => svg.value + iconClasses.value + size.value + icon.value,
+        async function update() {
+          if (!icon.value?.trim() || !svg.value) {
+            return;
+          }
+
           svg.value.innerHTML = "";
-          return;
-        }
+          const newIcon = String(icon.value)
 
-        svg.value.innerHTML = "";
-        const newIcon = icon.value?.trim();
+          if (!cache[newIcon]) {
+            cache[newIcon] = loadIcon(newIcon);
+          }
 
-        if (!newIcon) {
-          return;
-        }
+          const node = await cache[newIcon];
+          const svgIcon = node.cloneNode(true);
+          svg.value.appendChild(svgIcon);
 
-        if (!cache[newIcon]) {
-          cache[newIcon] = loadIcon(newIcon);
-        }
+          if (iconClasses.value) {
+            svgIcon.className.baseVal = iconClasses.value;
+          }
 
-        const node = await cache[newIcon];
-        const svgIcon = node.cloneNode(true);
-        svg.value.appendChild(svgIcon);
-
-        if (iconClasses.value) {
-          svgIcon.className.baseVal = iconClasses.value;
-        }
-
-        if (size.value) {
-          const s = String(size.value);
-          svgIcon.setAttribute("width", s);
-          svgIcon.setAttribute("height", s);
-        }
-      });
+          if (size.value) {
+            const s = String(size.value);
+            svgIcon.setAttribute("width", s);
+            svgIcon.setAttribute("height", s);
+          }
+        },
+      );
     }
   </script>
 </template>
