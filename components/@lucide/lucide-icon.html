@@ -11,9 +11,6 @@
     const iconClasses = defineProp("iconClasses");
     const label = defineProp("label");
     const size = defineProp("size");
-    const hasProps = computed(
-      () => [iconClasses.value,label.value,size.value].filter(Boolean).length !== 0,
-    );
 
     computed(async function update() {
       if (!icon.value) {
@@ -22,9 +19,9 @@
       }
 
       svg.value.innerHTML = "";
-      const newIcon = icon.value;
+      const newIcon = icon.value?.trim();
 
-      if (!newIcon?.trim()) {
+      if (!newIcon) {
         return;
       }
 
