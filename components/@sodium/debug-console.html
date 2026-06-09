@@ -3,7 +3,7 @@
 
   <script setup>
     import { templateRef, materialize, html } from "@li3/web";
-    const output = templateRef(null);
+    const output = templateRef("output");
 
     const fn = (...args) => {
       output.value.append(
