@@ -12,6 +12,8 @@ Then load the components you want to use in your page:
 ```html
 <html>
   <head>
+    <link rel="component" href="https://at-sodium.static.apphor.de/code-editor" />
+    <link rel="component" href="https://at-sodium.static.apphor.de/markdown-block" />
     <script type="importmap">
       {
         "imports": {
@@ -20,18 +22,13 @@ Then load the components you want to use in your page:
       }
     </script>
     <script type="module">
-      import { load } from "@li3/web";
-
-      load("https://at-sodium.static.apphor.de/code-editor");
-      load("https://at-sodium.static.apphor.de/select-viewport");
+      import "@li3/web";
     </script>
   </head>
   <body>
     <template app>
-      <select-viewport
-        onselect="editor.style.width = viewportMap[event.detail]"
-      ></select-viewport>
-      <code-editor id="editor"></code-editor>
+      <code-editor></code-editor>
+      <markdown-block></markdown-block>
     </template>
   </body>
 </html>
