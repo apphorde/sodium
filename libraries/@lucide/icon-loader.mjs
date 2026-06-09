@@ -3,7 +3,7 @@ let ce;
 export async function createElement(name) {
   if (!ce) {
     const mod = await import(
-      "https://unpkg.com/lucide@latest/dist/esm/createElement.js"
+      "https://unpkg.com/lucide@latest/dist/esm/createElement.mjs"
     );
     ce = mod.default;
   }
