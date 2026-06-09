@@ -2,24 +2,26 @@
   <span ref="svg" attr-aria-label="label || ''"></span>
 
   <script setup>
-    import { effect, templateRef, defineProp } from "@li3/web";
+    import { computed, effect, templateRef, defineProp } from "@li3/web";
     import { loadIcon } from "@lucide/icon-loader";
 
     const cache = {};
-    const svg = templateRef(null);
+    const svg = templateRef('svg');
     const icon = defineProp("icon");
     const iconClasses = defineProp("iconClasses");
     const label = defineProp("label");
     const size = defineProp("size");
-    const hasProps = effect(
-      () => icon.value + iconClasses.value + label.value + size.value,
+    const hasProps = computed(
+      () => [iconClasses.value,label.value,size.value].filter(Boolean).length !== 0,
     );
 
-    effect(async function update() {
-      if (!hasProps.value || !svg.value) return;
+    computed(async function update() {
+      if (!icon.value) {
+        svg.value.innerHTML = "";
+        return;
+      }
 
       svg.value.innerHTML = "";
-
       const newIcon = icon.value;
 
       if (!newIcon?.trim()) {
