@@ -301,17 +301,17 @@
 
       const syncValue = debounce(onUpdate, 10);
 
-      watch(props.value, () => {
-        const v = props.value.value;
-        if (getSource() !== v) {
-          updateSource(v);
-          onUpdate();
-        }
-      });
-
-      watch(props.language, () => updatePreview(getSource()));
-
       onInit(() => {
+        watch(props.value, () => {
+          const v = props.value.value;
+          if (getSource() !== v) {
+            updateSource(v);
+            onUpdate();
+          }
+        });
+
+        watch(props.language, () => updatePreview(getSource()));
+
         onUpdate();
       });
 
