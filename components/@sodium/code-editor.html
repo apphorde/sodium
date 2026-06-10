@@ -89,18 +89,16 @@
       const SPACE = " ";
       const SPACES = "  ";
       const preview = templateRef("preview");
-      const source = templateRef("source");
+      const textarea = templateRef("source");
       const lineNumbers = ref("");
       const positionLine = ref(0);
       const positionColumn = ref(0);
       const positionSelection = ref(0);
       const positionLineCount = ref(0);
       const onChange = defineEvent("change");
-      const props = {
-        name: defineProp("name"),
-        value: defineProp("value"),
-        language: defineProp("language"),
-      };
+      const name = defineProp("name");
+      const value = defineProp("value");
+      const language = defineProp("language");
 
       function debounce(fn, time = 200) {
         let t = 0;
@@ -112,17 +110,17 @@
       }
 
       function getSource() {
-        return source.value.value || "";
+        return textarea.value.value || "";
       }
 
       function updateSource(value) {
-        source.value.value = value;
+        textarea.value.value = value;
       }
 
       function updatePreview(code) {
-        const language = props.language.value || "javascript";
+        const lang = language.value || "javascript";
         preview.value.innerHTML =
-          window.hljs?.highlight(language, code + NEWLINE).value || code;
+          window.hljs?.highlight(lang, code + NEWLINE).value || code;
         updateLineNumbers(code);
         updatePosition();
       }
@@ -146,7 +144,7 @@
       }
 
       function insertString(string) {
-        const target = source.value;
+        const target = textarea.value;
         const start = target.selectionStart;
         const position = start + string.length;
         const code = getSource();
@@ -157,8 +155,8 @@
       }
 
       function updatePosition() {
-        const start = source.value.selectionStart;
-        const end = source.value.selectionEnd;
+        const start = textarea.value.selectionStart;
+        const end = textarea.value.selectionEnd;
         const before = getSource().slice(0, start);
         const selection = getSource().slice(start, end);
 
@@ -212,7 +210,7 @@
       }
 
       function updateSelection(start, end) {
-        const target = source.value;
+        const target = textarea.value;
         target.selectionEnd = start;
         target.selectionStart = end;
       }
@@ -240,7 +238,7 @@
 
       function onEnter(event) {
         const code = getSource();
-        const target = source.value;
+        const target = textarea.value;
         const position = target.selectionStart;
         const char = code.charAt(position);
 
@@ -295,22 +293,21 @@
       }
 
       function syncScroll() {
-        preview.value.scrollTop = source.value.scrollTop;
-        preview.value.scrollLeft = source.value.scrollLeft;
+        preview.value.scrollTop = textarea.value.scrollTop;
+        preview.value.scrollLeft = textarea.value.scrollLeft;
       }
 
       const syncValue = debounce(onUpdate, 10);
 
       onInit(() => {
-        watch(props.value, () => {
-          const v = props.value.value;
+        watch(value, (v) => {
           if (getSource() !== v) {
             updateSource(v);
             onUpdate();
           }
         });
 
-        watch(props.language, () => updatePreview(getSource()));
+        watch(language, () => updatePreview(getSource()));
 
         onUpdate();
       });
@@ -329,6 +326,11 @@
         positionColumn,
         positionSelection,
         positionLineCount,
+
+        syncValue,
+        syncScroll,
+        onKeyEvent,
+        updatePosition,
       };
     }
   </script>
