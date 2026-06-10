@@ -24,8 +24,7 @@
       class="bg-gray-100 p-1 text-xs text-right border-t flex items-center space-x-1"
     >
       <span
-        >{{ positionLine }}:{{ positionColumn }} ({{ positionSelection }}) - {{
-        positionLineCount }} L</span
+        >{{ positionLine }}:{{ positionColumn }} ({{ positionSelection }})</span
       >
     </div>
   </div>
@@ -94,7 +93,6 @@
       const positionLine = ref(0);
       const positionColumn = ref(0);
       const positionSelection = ref(0);
-      const positionLineCount = ref(0);
       const onChange = defineEvent("change");
       const name = defineProp("name");
       const value = defineProp("value");
@@ -325,7 +323,6 @@
         positionLine,
         positionColumn,
         positionSelection,
-        positionLineCount,
 
         syncValue,
         syncScroll,
