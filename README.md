@@ -12,12 +12,13 @@ Then load the components you want to use in your page:
 ```html
 <html>
   <head>
-    <link rel="component" href="https://sodium.static.apphor.de/code-editor.html" />
+    <link rel="component" href="https://sodium.static.apphor.de/lucide-icon.html" />
     <link rel="component" href="https://sodium.static.apphor.de/markdown-block.html" />
     <script type="importmap">
       {
         "imports": {
           "@li3/": "https://cdn.li3.dev/@li3/"
+          "@sodium/": "https://sodium.static.apphor.de/",
         }
       }
     </script>
@@ -27,8 +28,10 @@ Then load the components you want to use in your page:
   </head>
   <body>
     <template app>
-      <code-editor></code-editor>
-      <markdown-block></markdown-block>
+      <lucide-icon icon="globe" size="32"></lucide-icon>
+      <markdown-block>
+        # Hello
+      </markdown-block>
     </template>
   </body>
 </html>

@@ -3,7 +3,7 @@
 
   <script setup>
     import { computed, effect, templateRef, defineProp } from "@li3/web";
-    import { loadIcon } from "./icon-loader.mjs";
+    import { loadIcon } from "@sodium/icon-loader.mjs";
 
     export default function () {
       const cache = {};
@@ -13,7 +13,6 @@
       const label = defineProp("label");
       const size = defineProp("size");
 
-      // links update() to the reactive values of these refs
       effect(
         () => svg.value + iconClasses.value + size.value + icon.value,
         async function update() {
