@@ -108,11 +108,17 @@
       }
 
       function getSource() {
-        return textarea.value?.value || "";
+        if (textarea.value) {
+          return textare.value.value;
+        }
+
+        return '';
       }
 
       function updateSource(value) {
-        textarea.value?.value = value;
+        if (textarea.value) {
+          textarea.value.value = value;
+        }
       }
 
       function updatePreview(code) {
