@@ -108,11 +108,11 @@
       }
 
       function getSource() {
-        return textarea.value.value || "";
+        return textarea.value?.value || "";
       }
 
       function updateSource(value) {
-        textarea.value.value = value;
+        textarea.value?.value = value;
       }
 
       function updatePreview(code) {
