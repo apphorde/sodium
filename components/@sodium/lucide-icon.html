@@ -3,10 +3,32 @@
 
   <script setup>
     import { computed, effect, templateRef, defineProp } from "@li3/web";
-    import { loadIcon } from "@sodium/icon-loader.mjs";
 
     const cache = {};
-    
+    let ce;
+
+    export async function createElement(name) {
+      if (!ce) {
+        const mod =
+          await import("https://unpkg.com/lucide@latest/dist/esm/createElement.mjs");
+        ce = mod.default;
+      }
+
+      return ce(name);
+    }
+
+    export async function loadIcon(name) {
+      try {
+        const mod = await import(
+          `https://unpkg.com/lucide@latest/dist/esm/icons/${name}.mjs`
+        );
+        const icon = mod.default;
+        return createElement(icon);
+      } catch {
+        throw new Error("Icon not found: " + name);
+      }
+    }
+
     export default function () {
       const svg = templateRef("svg");
       const icon = defineProp("icon");
@@ -22,7 +44,7 @@
           }
 
           svg.value.innerHTML = "";
-          const newIcon = String(icon.value)
+          const newIcon = String(icon.value);
 
           if (!cache[newIcon]) {
             cache[newIcon] = loadIcon(newIcon);
