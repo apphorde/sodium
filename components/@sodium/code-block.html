@@ -1,4 +1,5 @@
 <template shadow-dom="open">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css" />
   <code attr-lang="language">
     <pre ref="preview">
       <slot></slot>
@@ -13,10 +14,6 @@
       const source = defineProp("source");
       const language = defineProp("language");
       const preview = templateRef("preview");
-
-      loadCss(
-        "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css",
-      );
 
       onInit(function () {
         const element = getElement();

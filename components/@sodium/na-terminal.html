@@ -1,4 +1,5 @@
 <template shadow-dom="open" component="na-terminal">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/5.5.0/xterm.min.css" />
   <div ref="terminal"></div>
 
   <script setup>
@@ -8,7 +9,6 @@
       defineEvent,
       onInit,
       onDestroy,
-      loadCss,
     } from "@li3/web";
 
     export default function () {
@@ -44,10 +44,6 @@
       onDestroy(() => {
         window.removeEventListener("resize", onResize);
       });
-
-      loadCss(
-        "https://cdnjs.cloudflare.com/ajax/libs/xterm/5.5.0/xterm.min.css",
-      );
     }
   </script>
 </template>

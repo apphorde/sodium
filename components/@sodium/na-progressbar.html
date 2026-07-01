@@ -1,4 +1,8 @@
 <template component="na-progress">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+  />
   <div class="mt-2 bg-gray-200 rounded-full h-2">
     <div
       class="bg-blue-600 rounded-full h-2"
@@ -9,17 +13,13 @@
   <p class="text-xs text-gray-500 mt-2">{{ label }}</p>
 
   <script setup>
-    import { defineProp, loadCss } from "@li3/web";
+    import { defineProp } from "@li3/web";
 
     export default function () {
       defineProp("value", { default: 100 });
       defineProp("max", { default: 100 });
       defineProp("color", { default: "" });
       defineProp("label", { default: "" });
-
-      loadCss(
-        "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css",
-      );
     }
   </script>
 </template>

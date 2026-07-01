@@ -1,4 +1,8 @@
 <template component="file-navitem">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+  />
   <li>
     <button
       class="flex w-full items-center px-4 py-2 text-sm rounded-md hover:bg-gray-100"
@@ -65,13 +69,10 @@
   </div>
 
   <script setup>
-    import { defineProp, loadCss } from "@li3/web";
+    import { defineProp } from "@li3/web";
 
     export default function () {
       defineProp("items", { default: () => [] });
-      loadCss(
-        "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css",
-      );
     }
   </script>
 </template>

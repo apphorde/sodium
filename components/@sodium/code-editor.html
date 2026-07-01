@@ -1,4 +1,12 @@
 <template shadow-dom="open" component="code-editor">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css"
+  />
   <div class="flex flex-col w-full h-full">
     <div class="flex w-full h-full">
       <div class="line-numbers">{{ lineNumbers }}</div>
@@ -80,7 +88,6 @@
       defineEvent,
       defineProp,
       onInit,
-      loadCss,
     } from "@li3/web";
 
     export default function () {
@@ -112,7 +119,7 @@
           return textarea.value.value;
         }
 
-        return '';
+        return "";
       }
 
       function updateSource(value) {
@@ -314,14 +321,6 @@
 
         onUpdate();
       });
-
-      loadCss(
-        "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css",
-      );
-
-      loadCss(
-        "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css",
-      );
 
       return {
         lineNumbers,
