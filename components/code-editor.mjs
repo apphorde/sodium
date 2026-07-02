@@ -84,16 +84,18 @@ export default function () {
     onUpdate();
   }
 
-  function updatePosition() {
+  const updatePosition = debounce(function updatePosition() {
     const start = sourceRef.selectionStart;
     const end = sourceRef.selectionEnd;
-    const before = valueProp.value.slice(0, start);
-    const selection = valueProp.value.slice(start, end);
+    const code = sourceRef.value;
+    const before = code.slice(0, start);
+    const selection = code.slice(start, end);
     const positionLine = before.split(NEWLINE).length;
     const positionColumn = start - before.lastIndexOf(NEWLINE);
-    const positionSelection = countChars(selection, NEWLINE) || 1;
+    const positionSelection = countChars(selection, NEWLINE) || 0;
+
     cursor.innerText = `${positionLine}:${positionColumn} (${positionSelection})`;
-  }
+  }, 20);
 
   function moveCodeBlock(event) {
     const { target, shiftKey } = event;
