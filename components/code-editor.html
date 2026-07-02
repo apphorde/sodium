@@ -167,13 +167,11 @@
         });
 
         preview.innerHTML = hl.value;
-        updatePosition();
-
-        lineNumbers.innerHTML = Array.from({
-          length: code.split("\n").length,
-        })
+        lineNumbers.innerHTML = Array(countChars(code, NEWLINE))
           .fill("<span></span>")
           .join("");
+
+        updatePosition();
       }
 
       function countChars(str, char) {
