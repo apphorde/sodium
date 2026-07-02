@@ -14,7 +14,6 @@
           autocomplete="off"
           spellcheck="false"
           bind-name="name"
-          bind-source="value"
           on-input.stop="syncValue($event)"
           on-change.stop="syncValue($event)"
           on-keydown="onKeyEvent($event)"
@@ -22,7 +21,7 @@
           on-select="updatePosition()"
           on-scroll="syncScroll($event)"
           class="layer source"
-          ref="source"
+          ref="sourceRef"
         ></textarea>
       </div>
     </div>
@@ -119,7 +118,7 @@
 
     export default function () {
       const preview = templateRef("preview").value;
-      const textarea = templateRef("source").value;
+      const textarea = templateRef("sourceRef").value;
       const cursor = templateRef("cursor").value;
       const lineNumbers = templateRef("lines").value;
 
