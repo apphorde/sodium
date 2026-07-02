@@ -5,6 +5,7 @@ import {
   defineEvent,
   defineProp,
   onUpdate as onUpdateProp,
+  onInit,
 } from "@li3/web";
 
 const NEWLINE = "\n";
@@ -225,6 +226,10 @@ export default function () {
 
     updatePreview();
   });
+
+  onInit(() => {
+    updatePreview();
+  })
 
   watch(language, updatePreview);
 
