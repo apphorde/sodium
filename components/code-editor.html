@@ -14,8 +14,9 @@
           autocomplete="off"
           spellcheck="false"
           bind-name="name"
-          on-input.stop="syncValue($event)"
-          on-change.stop="syncValue($event)"
+          bind-value="valueProp"
+          on-input.stop="onSourceChange()"
+          on-change.stop="onSourceChange()"
           on-keydown="onKeyEvent($event)"
           on-keyup="updatePosition()"
           on-select="updatePosition()"
@@ -118,13 +119,13 @@
 
     export default function () {
       const preview = templateRef("preview").value;
-      const textarea = templateRef("sourceRef").value;
+      const sourceRef = templateRef("sourceRef").value;
       const cursor = templateRef("cursor").value;
       const lineNumbers = templateRef("lines").value;
 
       const onChange = defineEvent("change");
       const name = defineProp("name");
-      const value = defineProp("value");
+      const valueProp = defineProp("value");
       const language = defineProp("language");
 
       function debounce(fn, time = 200) {
@@ -137,11 +138,11 @@
       }
 
       function getSource() {
-        return textarea.value;
+        return valueProp.value;
       }
 
       function setSource(value) {
-        textarea.value = value;
+        value.value = value;
       }
 
       function updatePreview() {
@@ -173,7 +174,7 @@
       }
 
       function insertString(string) {
-        const start = textarea.selectionStart;
+        const start = sourceRef.selectionStart;
         const position = start + string.length;
         const code = getSource();
         const beforeBlock = code.slice(0, start);
@@ -184,8 +185,8 @@
       }
 
       function updatePosition() {
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
+        const start = sourceRef.selectionStart;
+        const end = sourceRef.selectionEnd;
         const before = getSource().slice(0, start);
         const selection = getSource().slice(start, end);
         const positionLine = before.split(NEWLINE).length;
@@ -238,8 +239,8 @@
       }
 
       function updateSelection(start, end) {
-        textarea.selectionEnd = start;
-        textarea.selectionStart = end;
+        sourceRef.selectionEnd = start;
+        sourceRef.selectionStart = end;
       }
 
       function findIndentation(string) {
@@ -265,7 +266,7 @@
 
       function onEnter(event) {
         const code = getSource();
-        const position = textarea.selectionStart;
+        const position = sourceRef.selectionStart;
         const char = code.charAt(position);
 
         if (char && char !== NEWLINE) {
@@ -315,14 +316,14 @@
       }
 
       function syncScroll() {
-        preview.scrollTop = textarea.scrollTop;
-        preview.scrollLeft = textarea.scrollLeft;
+        preview.scrollTop = sourceRef.scrollTop;
+        preview.scrollLeft = sourceRef.scrollLeft;
       }
 
-      const syncValue = debounce(onUpdate, 10);
+      const onSourceChange = debounce(onUpdate, 10);
 
       onInit(() => {
-        watch(value, (v) => {
+        watch(valueProp, (v) => {
           if (getSource() !== v) {
             setSource(v);
             onUpdate();
@@ -335,7 +336,8 @@
       });
 
       return {
-        syncValue,
+        valueProp,
+        onSourceChange,
         syncScroll,
         onKeyEvent,
         updatePosition,
