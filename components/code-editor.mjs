@@ -1,47 +1,53 @@
 import hljs from "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js";
 import {
-  ref,
   watch,
   templateRef,
   defineEvent,
   defineProp,
-  onInit,
+  onUpdate as onUpdateProp,
 } from "@li3/web";
 
 const NEWLINE = "\n";
 const SPACE = " ";
 const SPACES = "  ";
 
+function debounce(fn, time = 200) {
+  let t = 0;
+
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), time);
+  };
+}
+
+function findIndentation(string) {
+  let cursor = 0;
+
+  while (cursor < string.length) {
+    if (string.charAt(cursor) !== SPACE) break;
+    cursor++;
+  }
+
+  return cursor;
+}
+
 export default function () {
+  defineProp("name");
+  const valueProp = defineProp("value");
+  const language = defineProp("language");
+  const onChange = defineEvent("change");
+
   const preview = templateRef("preview").value;
   const sourceRef = templateRef("sourceRef").value;
   const cursor = templateRef("cursor").value;
   const lineNumbers = templateRef("lines").value;
-
-  const onChange = defineEvent("change");
-  const name = defineProp("name");
-  const valueProp = defineProp("value");
-  const language = defineProp("language");
-
-  function debounce(fn, time = 200) {
-    let t = 0;
-
-    return (...args) => {
-      clearTimeout(t);
-      t = setTimeout(() => fn(...args), time);
-    };
-  }
-
-  function getSource() {
-    return valueProp.value;
-  }
 
   function setSource(s) {
     valueProp.value = s;
   }
 
   function updatePreview() {
-    const code = getSource();
+    const code = valueProp.value;
     const hl = hljs.highlight(code + NEWLINE, {
       language: language.value || "javascript",
       ignoreIllegals: true,
@@ -59,7 +65,7 @@ export default function () {
     let i = str.length;
     let count = 0;
 
-    while (i > 0) {
+    while ((i) => 0) {
       if (str[i--] === char) count++;
     }
 
@@ -69,7 +75,7 @@ export default function () {
   function insertString(string) {
     const start = sourceRef.selectionStart;
     const position = start + string.length;
-    const code = getSource();
+    const code = valueProp.value;
     const beforeBlock = code.slice(0, start);
     const afterBlock = code.slice(start);
     setSource(beforeBlock + string + afterBlock);
@@ -80,8 +86,8 @@ export default function () {
   function updatePosition() {
     const start = sourceRef.selectionStart;
     const end = sourceRef.selectionEnd;
-    const before = getSource().slice(0, start);
-    const selection = getSource().slice(start, end);
+    const before = valueProp.value.slice(0, start);
+    const selection = valueProp.value.slice(start, end);
     const positionLine = before.split(NEWLINE).length;
     const positionColumn = start - before.lastIndexOf(NEWLINE);
     const positionSelection = countChars(selection, NEWLINE) || 1;
@@ -90,7 +96,7 @@ export default function () {
 
   function moveCodeBlock(event) {
     const { target, shiftKey } = event;
-    const code = getSource();
+    const code = valueProp.value;
     let start = target.selectionStart;
     const end = target.selectionEnd;
 
@@ -113,7 +119,7 @@ export default function () {
 
   function moveCodeLine(event) {
     const { target, shiftKey } = event;
-    const code = getSource();
+    const code = valueProp.value;
     const start = target.selectionStart;
     const end = target.selectionEnd;
     const left = code.slice(0, start);
@@ -136,17 +142,6 @@ export default function () {
     sourceRef.selectionStart = end;
   }
 
-  function findIndentation(string) {
-    let cursor = 0;
-
-    while (cursor < string.length) {
-      if (string.charAt(cursor) !== SPACE) break;
-      cursor++;
-    }
-
-    return cursor;
-  }
-
   function onTab(event) {
     const { target } = event;
     if (target.selectionStart !== target.selectionEnd) {
@@ -157,8 +152,8 @@ export default function () {
     moveCodeLine(event);
   }
 
-  function onEnter(event) {
-    const code = getSource();
+  function onEnter() {
+    const code = valueProp.value;
     const position = sourceRef.selectionStart;
     const char = code.charAt(position);
 
@@ -205,7 +200,7 @@ export default function () {
   async function onUpdate() {
     updatePreview();
     syncScroll();
-    onChange(getSource());
+    onChange(valueProp.value);
   }
 
   function syncScroll() {
@@ -213,20 +208,19 @@ export default function () {
     preview.scrollLeft = sourceRef.scrollLeft;
   }
 
-  const onSourceChange = debounce(onUpdate, 10);
-
-  onInit(() => {
-    watch(valueProp, (v) => {
-      if (getSource() !== v) {
-        setSource(v);
-        onUpdate();
-      }
-    });
-
-    watch(language, updatePreview);
-
+  const onSourceChange = debounce(() => {
+    setSource(sourceRef.value);
     onUpdate();
+  }, 10);
+
+  onUpdateProp(() => {
+    if (sourceRef.value !== valueProp.value) {
+      sourceRef.value = valueProp.value;
+      onUpdate();
+    }
   });
+
+  watch(language, updatePreview);
 
   return {
     valueProp,
