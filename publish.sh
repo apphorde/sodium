@@ -1,6 +1,6 @@
 set -e
 
-export PATH="./node_modules/.bin:$PATH"
+export PATH="$PWD/node_modules/.bin:$PATH"
 
 npm i @node-lambdas/cli
 mkdir tmpdir/
