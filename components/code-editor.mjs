@@ -209,6 +209,7 @@ export default function () {
   function syncScroll() {
     preview.scrollTop = sourceRef.scrollTop;
     preview.scrollLeft = sourceRef.scrollLeft;
+    lineNumbers.scrollTop = sourceRef.scrollTop;
   }
 
   const onSourceChange = debounce(() => {
