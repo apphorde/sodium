@@ -47,8 +47,8 @@ export default function () {
   }
 
   function updatePreview() {
-    const code = sourceRef.value;
-    const hl = hljs.highlight(code + NEWLINE, {
+    const code = sourceRef.value + NEWLINE;
+    const hl = hljs.highlight(code, {
       language: language.value || "javascript",
       ignoreIllegals: true,
     });
