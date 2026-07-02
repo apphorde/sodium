@@ -1,22 +1,20 @@
 <template shadow-dom="open" component="code-editor">
   <link
     rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
-  />
-  <link
-    rel="stylesheet"
     href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css"
   />
-  <div class="flex flex-col w-full h-full">
-    <div class="flex w-full h-full">
-      <div class="line-numbers">{{ lineNumbers }}</div>
-      <div class="relative overflow-auto w-full h-full editor-area">
-        <div class="layer preview overflow-hidden" ref="preview"></div>
+  <div class="flex flex-col expand">
+    <div class="flex expand">
+      <div class="line-numbers" ref="lines"></div>
+      <div class="editor-area expand">
+        <div class="layer preview" ref="preview"></div>
         <textarea
           autocorrect="off"
           autocapitalize="off"
           autocomplete="off"
+          spellcheck="false"
           bind-name="name"
+          bind-source="value"
           on-input.stop="syncValue($event)"
           on-change.stop="syncValue($event)"
           on-keydown="onKeyEvent($event)"
@@ -28,16 +26,40 @@
         ></textarea>
       </div>
     </div>
-    <div
-      class="bg-gray-100 p-1 text-xs text-right border-t flex items-center space-x-1"
-    >
-      <span
-        >{{ positionLine }}:{{ positionColumn }} ({{ positionSelection }})</span
-      >
-    </div>
+    <div class="position" ref="cursor"></div>
   </div>
 
   <style>
+    *,
+    ::after,
+    ::before {
+      box-sizing: border-box;
+    }
+    .flex-col {
+      flex-direction: column;
+    }
+    .position {
+      border-top: 1px solid rgba(229, 231, 235, 1);
+      background-color: rgba(243, 244, 246, 1);
+      padding: 0.25rem;
+      font-size: 0.75rem;
+      line-height: 1rem;
+      text-align: right;
+    }
+    .flex {
+      display: flex;
+    }
+
+    .editor-area {
+      position: relative;
+      overflow: auto;
+    }
+
+    .expand {
+      width: 100%;
+      height: 100%;
+    }
+
     .line-numbers {
       font-family: monospace;
       line-height: 1rem;
@@ -66,6 +88,7 @@
     .preview {
       z-index: 2;
       white-space: pre;
+      overflow: hidden;
     }
 
     .source {
@@ -90,16 +113,16 @@
       onInit,
     } from "@li3/web";
 
+    const NEWLINE = "\n";
+    const SPACE = " ";
+    const SPACES = "  ";
+
     export default function () {
-      const NEWLINE = "\n";
-      const SPACE = " ";
-      const SPACES = "  ";
-      const preview = templateRef("preview");
-      const textarea = templateRef("source");
-      const lineNumbers = ref("");
-      const positionLine = ref(0);
-      const positionColumn = ref(0);
-      const positionSelection = ref(0);
+      const preview = templateRef("preview").value;
+      const textarea = templateRef("source").value;
+      const cursor = templateRef("cursor").value;
+      const lineNumbers = templateRef("lines").value;
+
       const onChange = defineEvent("change");
       const name = defineProp("name");
       const value = defineProp("value");
@@ -115,31 +138,28 @@
       }
 
       function getSource() {
-        if (textarea.value) {
-          return textarea.value.value;
-        }
-
-        return "";
+        return textarea.value;
       }
 
-      function updateSource(value) {
-        if (textarea.value) {
-          textarea.value.value = value;
-        }
+      function setSource(value) {
+        textarea.value = value;
       }
 
-      function updatePreview(code) {
-        const lang = language.value || "javascript";
-        preview.value.innerHTML = hljs.highlight(lang, code + NEWLINE).value;
-        updateLineNumbers(code);
+      function updatePreview() {
+        const code = getSource();
+        const hl = hljs.highlight(code + NEWLINE, {
+          language: language.value || "javascript",
+          ignoreIllegals: true,
+        });
+
+        preview.innerHTML = hl.value;
         updatePosition();
-      }
 
-      function updateLineNumbers(code) {
-        lineNumbers.value = code
-          .split("\n")
-          .map((_, i) => i + 1)
-          .join("\n");
+        lineNumbers.innerHTML = Array.from({
+          length: code.split("\n").length,
+        })
+          .fill("<span></span>")
+          .join("");
       }
 
       function countChars(str, char) {
@@ -154,26 +174,25 @@
       }
 
       function insertString(string) {
-        const target = textarea.value;
-        const start = target.selectionStart;
+        const start = textarea.selectionStart;
         const position = start + string.length;
         const code = getSource();
         const beforeBlock = code.slice(0, start);
         const afterBlock = code.slice(start);
-        updateSource(beforeBlock + string + afterBlock);
+        setSource(beforeBlock + string + afterBlock);
         updateSelection(position, position);
+        onUpdate();
       }
 
       function updatePosition() {
-        const start = textarea.value.selectionStart;
-        const end = textarea.value.selectionEnd;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
         const before = getSource().slice(0, start);
         const selection = getSource().slice(start, end);
-
-        positionLine.value = before.split(NEWLINE).length;
-        positionColumn.value = start - before.lastIndexOf(NEWLINE);
-        positionSelection.value = end - start;
-        positionSelection.value = countChars(selection, NEWLINE) || 1;
+        const positionLine = before.split(NEWLINE).length;
+        const positionColumn = start - before.lastIndexOf(NEWLINE);
+        const positionSelection = countChars(selection, NEWLINE) || 1;
+        cursor.innerText = `${positionLine}:${positionColumn} (${positionSelection})`;
       }
 
       function moveCodeBlock(event) {
@@ -194,7 +213,7 @@
           .map((line) => (shiftKey ? line.replace(SPACES, "") : SPACES + line))
           .join(NEWLINE);
 
-        updateSource(beforeBlock + modifiedBlock + afterBlock);
+        setSource(beforeBlock + modifiedBlock + afterBlock);
         updateSelection(start, start + modifiedBlock.length);
         onUpdate();
       }
@@ -214,15 +233,14 @@
           ? start - SPACES.length
           : start + SPACES.length;
 
-        updateSource(newSource);
+        setSource(newSource);
         updateSelection(cursorPosition, cursorPosition);
         onUpdate();
       }
 
       function updateSelection(start, end) {
-        const target = textarea.value;
-        target.selectionEnd = start;
-        target.selectionStart = end;
+        textarea.selectionEnd = start;
+        textarea.selectionStart = end;
       }
 
       function findIndentation(string) {
@@ -248,13 +266,11 @@
 
       function onEnter(event) {
         const code = getSource();
-        const target = textarea.value;
-        const position = target.selectionStart;
+        const position = textarea.selectionStart;
         const char = code.charAt(position);
 
         if (char && char !== NEWLINE) {
           insertString(NEWLINE);
-          onUpdate();
           return;
         }
 
@@ -273,7 +289,6 @@
         }
 
         insertString(insertion);
-        onUpdate();
       }
 
       function onKeyEvent(event) {
@@ -295,16 +310,14 @@
       }
 
       async function onUpdate() {
-        const code = getSource();
-
-        updatePreview(code);
+        updatePreview();
         syncScroll();
-        onChange(code);
+        onChange(getSource());
       }
 
       function syncScroll() {
-        preview.value.scrollTop = textarea.value.scrollTop;
-        preview.value.scrollLeft = textarea.value.scrollLeft;
+        preview.scrollTop = textarea.scrollTop;
+        preview.scrollLeft = textarea.scrollLeft;
       }
 
       const syncValue = debounce(onUpdate, 10);
@@ -312,22 +325,17 @@
       onInit(() => {
         watch(value, (v) => {
           if (getSource() !== v) {
-            updateSource(v);
+            setSource(v);
             onUpdate();
           }
         });
 
-        watch(language, () => updatePreview(getSource()));
+        watch(language, updatePreview);
 
         onUpdate();
       });
 
       return {
-        lineNumbers,
-        positionLine,
-        positionColumn,
-        positionSelection,
-
         syncValue,
         syncScroll,
         onKeyEvent,
