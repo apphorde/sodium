@@ -1,5 +1,8 @@
 <template shadow-dom="open">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/styles/default.min.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/default.min.css"
+  />
   <code attr-lang="language">
     <pre ref="preview">
       <slot></slot>
@@ -8,7 +11,7 @@
 
   <script setup>
     import { templateRef, defineProp, onInit, getElement } from "@li3/web";
-    import "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.1.2/build/highlight.min.js";
+    import hljs from "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js";
 
     export default function () {
       const source = defineProp("source");
@@ -17,10 +20,18 @@
 
       onInit(function () {
         const element = getElement();
-        const src = source.value || element.innerHTML.trim() || "";
-        const language = language.value || "";
+        let src = source.value || element.innerHTML.trim() || "";
+        const language = language.value || "javascript";
+
+        if (language === "html") {
+          src = src.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+        }
+
         preview.value.innerHTML =
-          window.hljs?.highlight(language, src).value || src;
+          hljs.highlight(src, {
+            language,
+            ignoreIllegals: true,
+          }).value || src;
       });
     }
   </script>

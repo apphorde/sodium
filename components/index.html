@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sodium Component Library</title>
+    <script src="https://unpkg.com/@li3/web@latest/loader"></script>
+  </head>
+  <body>
+    <h1>Sodium Components Library</h1>
+    <section>
+      <h2>code-block</h2>
+      <link rel="component" href="/code-block.html" />
+      <code-block lang="html">
+        &lt;code-block lang="javascript"&gt;
+        console.log('hi');&lt;/code-block&gt;
+      </code-block>
+      <code-block lang="javascript">console.log('hi')</code-block>
+    </section>
+
+    <section>
+      <h2>code-editor</h2>
+      <link rel="component" href="/code-editor.html" />
+      <code-editor
+        lang="javascript"
+        value="export default function() { console.log('Hello world!') }"
+      ></code-editor>
+    </section>
+
+    <section>
+      <h2>lucide-icon</h2>
+      <link rel="component" href="/lucide-icon.html" />
+      <lucide-icon size="64" icon="user"></lucide-icon>
+    </section>
+  </body>
+</html>
