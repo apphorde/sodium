@@ -219,6 +219,8 @@ export default function () {
       sourceRef.value = valueProp.value;
       onUpdate();
     }
+
+    updatePreview();
   });
 
   watch(language, updatePreview);
