@@ -62,11 +62,12 @@ export default function () {
   }
 
   function countChars(str, char) {
-    let i = str.length;
+    const max = str.length;
     let count = 0;
+    let i = 0;
 
-    while ((i) => 0) {
-      if (str[i--] === char) count++;
+    while (i < max) {
+      if (str[i++] === char) count++;
     }
 
     return count;
