@@ -7,7 +7,7 @@
     <div class="flex expand">
       <div class="monospace line-numbers" ref="lines"></div>
       <div class="editor-area expand">
-        <div class="layer preview" ref="preview"></div>
+        <div class="layer preview monospace" ref="preview"></div>
         <textarea
           autocorrect="off"
           autocapitalize="off"
@@ -35,9 +35,11 @@
     ::before {
       box-sizing: border-box;
     }
+
     .flex-col {
       flex-direction: column;
     }
+
     .position {
       border-top: 1px solid rgba(229, 231, 235, 1);
       background-color: rgba(243, 244, 246, 1);
@@ -46,6 +48,7 @@
       line-height: 1rem;
       text-align: right;
     }
+
     .flex {
       display: flex;
     }
@@ -63,13 +66,14 @@
     .monospace {
       font-family: monospace;
       line-height: 1rem;
-      font-size: 1rem;
+      font-size: 0.75rem;
+      letter-spacing: 0px;
+      padding: 0.5rem 0.25rem;
     }
 
     .line-numbers {
       counter-reset: line;
       text-align: right;
-      padding: 0.5rem;
       opacity: 0.5;
       background-color: #f0f0f0;
       user-select: none;
@@ -92,11 +96,6 @@
       right: 0px;
       left: 0px;
       bottom: 0px;
-      font-family: monospace;
-      font-size: 1rem;
-      line-height: 1rem;
-      letter-spacing: 0px;
-      padding: 0.5rem 0.25rem;
     }
 
     .preview {
