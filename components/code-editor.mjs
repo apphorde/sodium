@@ -54,7 +54,7 @@ export default function () {
     });
 
     preview.innerHTML = hl.value;
-    lineNumbers.innerHTML = Array(countChars(code, NEWLINE))
+    lineNumbers.innerHTML = Array(countChars(code, NEWLINE) || 1)
       .fill("<span></span>")
       .join("");
 
