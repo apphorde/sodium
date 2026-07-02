@@ -2,7 +2,14 @@
   <span ref="svg" attr-aria-label="label || ''"></span>
 
   <script setup>
-    import { computed, effect, templateRef, defineProp } from "@li3/web";
+    import {
+      computed,
+      effect,
+      templateRef,
+      shallowRef,
+      watch,
+      defineProp,
+    } from "@li3/web";
 
     const cache = {};
     let ce;
@@ -35,6 +42,24 @@
       const iconClasses = defineProp("iconClasses");
       const label = defineProp("label");
       const size = defineProp("size");
+      const iconEl = shallowRef(null);
+
+      watch(iconEl, () => {
+        if (!iconEl.value) return;
+        const svgIcon = iconEl.value.cloneNode(true);
+        svg.value.innerHTML = "";
+        svg.value.appendChild(svgIcon);
+
+        if (iconClasses.value) {
+          svgIcon.className.baseVal = iconClasses.value;
+        }
+
+        if (size.value) {
+          const s = String(size.value);
+          svgIcon.setAttribute("width", s);
+          svgIcon.setAttribute("height", s);
+        }
+      });
 
       effect(
         () => svg.value + iconClasses.value + size.value + icon.value,
@@ -50,19 +75,7 @@
             cache[newIcon] = loadIcon(newIcon);
           }
 
-          const node = await cache[newIcon];
-          const svgIcon = node.cloneNode(true);
-          svg.value.appendChild(svgIcon);
-
-          if (iconClasses.value) {
-            svgIcon.className.baseVal = iconClasses.value;
-          }
-
-          if (size.value) {
-            const s = String(size.value);
-            svgIcon.setAttribute("width", s);
-            svgIcon.setAttribute("height", s);
-          }
+          iconEl.value = await cache[newIcon];
         },
       );
     }
