@@ -218,18 +218,17 @@ export default function () {
     onUpdate();
   }, 10);
 
-  onUpdateProp(() => {
+  function syncEditor() {
     if (sourceRef.value !== valueProp.value) {
       sourceRef.value = valueProp.value;
       onUpdate();
     }
 
     updatePreview();
-  });
+  }
 
-  onInit(() => {
-    updatePreview();
-  })
+  onUpdateProp(syncEditor);
+  onInit(syncEditor);
 
   watch(language, updatePreview);
 
