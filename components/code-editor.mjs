@@ -36,6 +36,7 @@ export default function () {
   defineProp("name");
   const valueProp = defineProp("value");
   const language = defineProp("language");
+  const readonly = defineProp("readonly");
   const onChange = defineEvent("change");
 
   const preview = templateRef("preview").value;
@@ -214,6 +215,8 @@ export default function () {
   }
 
   const onSourceChange = debounce(() => {
+    if (readonly.value) return;
+
     setSource(sourceRef.value);
     onUpdate();
   }, 10);
