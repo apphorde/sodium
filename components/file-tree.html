@@ -15,6 +15,7 @@
           on-click.stop.prevent="onSelect(entry)"
           on-dblclick.stop.prevent="onRename(entry)"
           class="p-1 w-full text-xs text-left flex gap-1"
+          class-bg-gray-200.font-bold="selected?.path === entry.path"
         >
           <lucide-icon size="14" icon="file"></lucide-icon>
           <span class="truncate">{{ entry.name }}</span>
