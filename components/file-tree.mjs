@@ -8,10 +8,11 @@ export default function fileTree() {
   const expanded = ref([]);
 
   function toggleExpanded(path) {
-    if (expanded.value.includes(path)) {
-      expanded.value = expanded.value.filter((x) => x !== path);
+    const list = expanded.value;
+    if (list.includes(path)) {
+      expanded.value = list.filter((x) => x !== path);
     } else {
-      expanded.value = expanded.value.concat(path);
+      expanded.value = list.concat(path);
     }
   }
 
@@ -26,6 +27,11 @@ export default function fileTree() {
     }
   }
 
+  function onToggle(entry) {
+    toggleExpanded(entry.path);
+    onNav(entry);
+  }
+
   return {
     files,
     expanded,
@@ -33,7 +39,7 @@ export default function fileTree() {
     onSelect,
     onNav,
     isExpanded,
-    toggleExpanded,
+    onToggle,
     onRename,
   };
 }
