@@ -26,7 +26,7 @@
         ></textarea>
       </div>
     </div>
-    <div class="position" ref="cursor"></div>
+    <div class="position"><span ref="cursor"></span><button on-click="onSetLanguage()" class="">{{ language || 'unknown' }}</button></div>
   </div>
 
   <style>
@@ -42,11 +42,14 @@
 
     .position {
       border-top: 1px solid rgba(229, 231, 235, 1);
-      background-color: rgba(243, 244, 246, 1);
+      background-color: rgba(243, 244, 246, 0.4);
       padding: 0.25rem;
       font-size: 0.75rem;
       line-height: 1rem;
       text-align: right;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
     }
 
     .flex {

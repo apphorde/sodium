@@ -38,11 +38,17 @@ export default function () {
   const language = defineProp("language");
   const readonly = defineProp("readonly");
   const onChange = defineEvent("change");
-
   const preview = templateRef("preview").value;
   const sourceRef = templateRef("sourceRef").value;
   const cursor = templateRef("cursor").value;
   const lineNumbers = templateRef("lines").value;
+
+  function onSetLanguage() {
+    const v = prompt("language", language.value);
+    if (v) {
+      language.value = v;
+    }
+  }
 
   function setSource(s) {
     valueProp.value = s;
@@ -238,6 +244,7 @@ export default function () {
   return {
     valueProp,
     onSourceChange,
+    onSetLanguage,
     syncScroll,
     onKeyEvent,
     updatePosition,
