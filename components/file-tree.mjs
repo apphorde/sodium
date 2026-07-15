@@ -1,18 +1,19 @@
-import { defineProp, defineEvent, ref } from "@li3/web";
+import { defineProp, defineEvent, hook, watch } from "@li3/web";
 
 export default function fileTree() {
   const files = defineProp("files");
   const selected = defineProp("selected");
   const onSelect = defineEvent("select");
+  const emitRename = defineEvent("rename");
   const onNav = defineEvent("navigate");
-  const expanded = ref([]);
+  const [expanded, setExpanded] = hook([]);
 
   function toggleExpanded(path) {
     const list = expanded.value;
     if (list.includes(path)) {
-      expanded.value = list.filter((x) => x !== path);
+      setExpanded(list.filter((x) => x !== path));
     } else {
-      expanded.value = list.concat(path);
+      setExpanded(list.concat(path));
     }
   }
 
@@ -24,6 +25,7 @@ export default function fileTree() {
     const name = prompt("File name", entry.name);
     if (name) {
       entry.name = name;
+      emitRename(entry);
     }
   }
 
@@ -31,6 +33,8 @@ export default function fileTree() {
     toggleExpanded(entry.path);
     onNav(entry);
   }
+
+  watch(files, () => setExpanded([]));
 
   return {
     files,
