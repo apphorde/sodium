@@ -44,10 +44,8 @@ export default function () {
   const lineNumbers = templateRef("lines").value;
 
   function onSetLanguage() {
-    const v = prompt("language", language.value);
-    if (v) {
-      language.value = v;
-    }
+    const v = prompt("language", language.value) || "";
+    language.value = v.trim();
   }
 
   function setSource(s) {
@@ -65,13 +63,11 @@ export default function () {
       : hljs.highlightAuto(code);
 
     preview.innerHTML = hl.value;
+    language.value = hl.language;
+
     lineNumbers.innerHTML = Array(countChars(code, NEWLINE) || 1)
       .fill("<span></span>")
       .join("");
-
-    if (hl.language !== lang) {
-      language.value = hl.language;
-    }
 
     updatePosition();
   }
