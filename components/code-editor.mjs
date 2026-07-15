@@ -70,7 +70,7 @@ export default function () {
       .join("");
 
     if (hl.language !== lang) {
-      language.value = lang;
+      language.value = hl.language;
     }
 
     updatePosition();
