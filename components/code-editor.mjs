@@ -56,15 +56,22 @@ export default function () {
 
   function updatePreview() {
     const code = sourceRef.value + NEWLINE;
-    const hl = hljs.highlight(code, {
-      language: language.value || "javascript",
-      ignoreIllegals: true,
-    });
+    const lang = language.value;
+    const hl = lang
+      ? hljs.highlight(code, {
+          language: lang,
+          ignoreIllegals: true,
+        })
+      : hljs.highlightAuto(code);
 
     preview.innerHTML = hl.value;
     lineNumbers.innerHTML = Array(countChars(code, NEWLINE) || 1)
       .fill("<span></span>")
       .join("");
+
+    if (hl.language !== lang) {
+      language.value = lang;
+    }
 
     updatePosition();
   }
