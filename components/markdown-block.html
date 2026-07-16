@@ -11,6 +11,7 @@
 
       async function update(text) {
         try {
+          element.innerHTML = text;
           const html = await markdown(text);
           element.innerHTML = html || text;
         } catch (error) {
@@ -29,7 +30,7 @@
           ).innerHTML.trim() || "";
 
         if (!source) return;
-
+        
         update(source);
       });
     }
