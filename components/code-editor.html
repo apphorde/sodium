@@ -5,7 +5,11 @@
   />
   <div class="flex flex-col expand">
     <div class="flex editor-container">
-      <div class="monospace line-numbers" class-hidden="nolines" ref="lines"></div>
+      <div
+        class="monospace line-numbers"
+        class-hidden="nolines"
+        ref="lines"
+      ></div>
       <div class="editor-area expand">
         <div class="layer preview monospace" ref="preview"></div>
         <textarea
@@ -26,7 +30,12 @@
         ></textarea>
       </div>
     </div>
-    <div class="position" class-hidden="nostatus"><span ref="cursor"></span><button on-click="onSetLanguage()" class="">{{ language || 'auto' }}</button></div>
+    <div class="position" class-hidden="nostatus">
+      <span ref="cursor"></span
+      ><button on-click="onSetLanguage()" class="">
+        {{ language || 'auto' }}
+      </button>
+    </div>
   </div>
 
   <style>
@@ -36,7 +45,9 @@
       box-sizing: border-box;
     }
 
-    .hidden { display: none }
+    .hidden {
+      display: none !important;
+    }
 
     .flex-col {
       flex-direction: column;
