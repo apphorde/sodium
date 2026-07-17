@@ -18,11 +18,7 @@
       const language = defineProp("language");
       const preview = templateRef("preview");
 
-      onInit(function () {
-        const element = getElement();
-        let src = source.value || element.innerHTML.trim() || "";
-        const language = language.value || "javascript";
-
+      function update(language, src) {
         if (language === "html") {
           src = src.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
         }
@@ -32,7 +28,17 @@
             language,
             ignoreIllegals: true,
           }).value || src;
+      }
+
+      onInit(function () {
+        const element = getElement();
+        let src = source.value || element.innerHTML.trim() || "";
+        const language = language.value || "javascript";
+
+        update(lang, src);
       });
+
+      watch(source, (src) => update(language.value || "javascript", src));
     }
   </script>
 </template>
