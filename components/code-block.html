@@ -34,11 +34,11 @@
       onInit(function () {
         update(
           language.value || "javascript", 
-          source.value || element.innerHTML.trim() || ""
+          source.value || element.innerHTML.trim()
         );
       });
 
-      watch(source, (src) => update(language.value || "javascript", src || ''));
+      watch(source, () => update(language.value || "javascript", source.value || ''));
     }
   </script>
 </template>
