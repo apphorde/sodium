@@ -32,10 +32,10 @@
       }
 
       onInit(function () {
-        let src = source.value || element.innerHTML.trim() || "";
-        const language = language.value || "javascript";
-
-        update(lang, src);
+        update(
+          language.value || "javascript", 
+          source.value || element.innerHTML.trim() || ""
+        );
       });
 
       watch(source, (src) => update(language.value || "javascript", src || ''));
