@@ -38,7 +38,7 @@
         update(lang, src);
       });
 
-      watch(source, (src) => update(language.value || "javascript", src));
+      watch(source, (src) => update(language.value || "javascript", src || ''));
     }
   </script>
 </template>
