@@ -15,6 +15,8 @@ export default function fileTree() {
     } else {
       setExpanded(list.concat(path));
     }
+
+    
   }
 
   function isExpanded(path) {
