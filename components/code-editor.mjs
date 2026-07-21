@@ -34,6 +34,7 @@ function findIndentation(string) {
 
 export default function () {
   defineProp("name");
+  defineProp('status');
   const valueProp = defineProp("value");
   const language = defineProp("language");
   const nostatus = defineProp("nostatus");

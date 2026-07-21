@@ -4,6 +4,13 @@
     href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/default.min.css"
   />
   <div class="flex flex-col expand">
+    <div class="position" class-hidden="!!nostatus">
+      <span class="editor-status" class-hidden="!status">{{ status }}</span>
+      <div>
+        <span ref="cursor"></span>
+        <button on-click="onSetLanguage()">{{ language || 'auto' }}</button>
+      </div>
+    </div>
     <div class="flex editor-container">
       <div
         class="monospace line-numbers"
@@ -30,12 +37,6 @@
         ></textarea>
       </div>
     </div>
-    <div class="position" class-hidden="!!nostatus">
-      <span ref="cursor"></span
-      ><button on-click="onSetLanguage()" class="">
-        {{ language || 'auto' }}
-      </button>
-    </div>
   </div>
 
   <style>
@@ -58,6 +59,16 @@
       height: calc(100% - 30px);
     }
 
+    .editor-status {
+      font-size: 0.75rem;
+      line-height: 1rem;
+      padding: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+
     .position {
       border-top: 1px solid rgba(229, 231, 235, 1);
       background-color: rgba(243, 244, 246, 0.4);
@@ -67,7 +78,7 @@
       text-align: right;
       display: flex;
       gap: 0.5rem;
-      justify-content: flex-end;
+      justify-content: space-between;
       height: 30px;
     }
 
