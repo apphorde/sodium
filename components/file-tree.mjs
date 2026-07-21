@@ -1,4 +1,4 @@
-import { defineProp, defineEvent, hook, watch } from "@li3/web";
+import { defineProp, defineEvent, shallowRef, watch } from "@li3/web";
 
 export default function fileTree() {
   const files = defineProp("files");
@@ -7,6 +7,7 @@ export default function fileTree() {
   const emitRename = defineEvent("rename");
   const onNavigate = defineEvent("navigate");
   const onExpand = defineProp("expand");
+  const expanded = shallowRef([]);
 
   function toggleExpanded(path) {
     const list = expanded.value;
@@ -39,7 +40,7 @@ export default function fileTree() {
     }
   }
 
-  watch(files, () => setExpanded([]));
+  watch(files, () => (expanded.value = []));
 
   return {
     files,
