@@ -5,18 +5,17 @@ export default function fileTree() {
   const selected = defineProp("selected");
   const onSelect = defineEvent("select");
   const emitRename = defineEvent("rename");
-  const onNav = defineEvent("navigate");
-  const [expanded, setExpanded] = hook([]);
+  const onNavigate = defineEvent("navigate");
+  const onExpand = defineProp("expand");
 
   function toggleExpanded(path) {
     const list = expanded.value;
-    if (list.includes(path)) {
-      setExpanded(list.filter((x) => x !== path));
-    } else {
-      setExpanded(list.concat(path));
-    }
 
-    
+    if (list.includes(path)) {
+      expanded.value = list.filter((x) => x !== path);
+    } else {
+      expanded.value = list.concat(path);
+    }
   }
 
   function isExpanded(path) {
@@ -32,8 +31,12 @@ export default function fileTree() {
   }
 
   function onToggle(entry) {
-    toggleExpanded(entry.path);
-    onNav(entry);
+    const nav = onNavigate(entry);
+
+    if (!nav.defaultPrevented) {
+      toggleExpanded(entry.path);
+      onExpand(expanded.value);
+    }
   }
 
   watch(files, () => setExpanded([]));
@@ -43,7 +46,7 @@ export default function fileTree() {
     expanded,
     selected,
     onSelect,
-    onNav,
+    onNav: onNavigate,
     isExpanded,
     onToggle,
     onRename,

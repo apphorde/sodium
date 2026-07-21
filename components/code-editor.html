@@ -7,7 +7,7 @@
     <div class="flex editor-container">
       <div
         class="monospace line-numbers"
-        class-hidden="nolines"
+        class-hidden="!!nolines"
         ref="lines"
       ></div>
       <div class="editor-area expand">
@@ -30,7 +30,7 @@
         ></textarea>
       </div>
     </div>
-    <div class="position" class-hidden="nostatus">
+    <div class="position" class-hidden="!!nostatus">
       <span ref="cursor"></span
       ><button on-click="onSetLanguage()" class="">
         {{ language || 'auto' }}

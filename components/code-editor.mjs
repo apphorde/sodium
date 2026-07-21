@@ -36,8 +36,8 @@ export default function () {
   defineProp("name");
   const valueProp = defineProp("value");
   const language = defineProp("language");
-  const nostatus = defineProp('nostatus');
-  const nolines = defineProp('nolines');
+  const nostatus = defineProp("nostatus");
+  const nolines = defineProp("nolines");
   const readonly = defineProp("readonly");
   const onChange = defineEvent("change");
   const preview = templateRef("preview").value;
@@ -67,9 +67,11 @@ export default function () {
     preview.innerHTML = hl.value;
     language.value = hl.language;
 
-    lineNumbers.innerHTML = nolines.value ? '' :  Array(countChars(code, NEWLINE) || 1)
-      .fill("<span></span>")
-      .join("");
+    lineNumbers.innerHTML = nolines.value
+      ? ""
+      : Array(countChars(code, NEWLINE) || 1)
+          .fill("<span></span>")
+          .join("");
 
     updatePosition();
   }
