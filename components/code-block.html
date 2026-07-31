@@ -6,7 +6,7 @@
   </code>
 
   <script setup="" lang="ts">
-    import { templateRef, defineProp, onInit, getElement, watch } from '@li3/web';
+    import { templateRef, defineProp, onInit, getElement, watch, loadCss } from '@li3/web';
     import hljs from 'https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js';
 
     // Themes:
@@ -21,7 +21,7 @@
 
       function update() {
         const lang = language.value || 'javascript';
-        const src = source.value || '';
+        let src = source.value || '';
 
         if (lang === 'html') {
           src = src.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
