@@ -11,5 +11,5 @@ cd components
   # mv ../tmpdir/$library ./$library
 # done
 
-tar -cz -f - . | curl -sS -H "Authorization: $DEPLOY_API_KEY" https://sodium.static.apphor.de/ --data-binary @-
+tar -cz -f - . | curl -sS -o /dev/null --fail -H "Authorization: $DEPLOY_API_KEY" https://sodium.static.apphor.de/ --data-binary @-
 
