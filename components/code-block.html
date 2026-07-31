@@ -1,9 +1,5 @@
 <template shadow-dom="open" component="code-block">
-  <code attr-lang="language">
-    <pre ref="preview">
-      <slot></slot>
-    </pre>
-  </code>
+  <code attr-lang="language" ref="preview" class="hljs"></code>
 
   <script setup="" lang="ts">
     import { templateRef, defineProp, onInit, getElement, watch, loadCss } from '@li3/web';
@@ -37,7 +33,9 @@
       onInit(update);
       watch(source, update);
       watch(theme, async () => {
-        const sheet = await loadCss(`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/${theme.value}.min.css`, { adopt: false });
+        const sheet = await loadCss(`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/${theme.value}.min.css`, {
+          adopt: false,
+        });
         element.shadowRoot.adoptedStyleSheets = [sheet];
       });
     }
