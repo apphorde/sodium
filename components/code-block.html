@@ -13,8 +13,8 @@
     // https://app.unpkg.com/@highlightjs/cdn-assets@11.11.1/files/styles
 
     export default function () {
-      const theme = defineProp('theme', { default: 'atom-one-dark' });
       const element = getElement();
+      const theme = defineProp('theme', { default: 'atom-one-dark' });
       const source = defineProp('source', { default: element.innerHTML.trim() });
       const language = defineProp('language', { default: 'javascript' });
       const preview = templateRef('preview');
