@@ -8,21 +8,22 @@
   </head>
   <body>
     <h1>Sodium Components Library</h1>
+
     <section>
       <h2>code-block</h2>
       <link rel="component" href="/code-block.html" />
-      <code-block lang="html">
-        &lt;code-block lang="javascript"&gt;
-        console.log('hi');&lt;/code-block&gt;
+      <code-block language="html">
+        &lt;code-block language="javascript"&gt; console.log('hi');&lt;/code-block&gt;
       </code-block>
-      <code-block lang="javascript">console.log('hi')</code-block>
+      <code-block language="javascript">console.log('hi')</code-block>
+      <code-block language="css" source=".class { display: block }"></code-block>
     </section>
 
     <section>
       <h2>code-editor</h2>
       <link rel="component" href="/code-editor.html" />
       <code-editor
-        lang="javascript"
+        language="javascript"
         value="export default function() { console.log('Hello world!') }"
       ></code-editor>
     </section>
