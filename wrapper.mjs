@@ -1,1 +1,0 @@
-import {defineFromString} from "@li3/web";(async function(){const r = await (await fetch(import.meta.url+'.html')).text();defineFromString(r);})();

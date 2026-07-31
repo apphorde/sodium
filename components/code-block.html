@@ -1,44 +1,45 @@
 <template shadow-dom="open" component="code-block">
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/default.min.css"
-  />
   <code attr-lang="language">
     <pre ref="preview">
       <slot></slot>
     </pre>
   </code>
 
-  <script setup>
-    import { templateRef, defineProp, onInit, getElement, watch } from "@li3/web";
-    import hljs from "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js";
+  <script setup="" lang="ts">
+    import { templateRef, defineProp, onInit, getElement, watch } from '@li3/web';
+    import hljs from 'https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js';
+
+    // Themes:
+    // https://app.unpkg.com/@highlightjs/cdn-assets@11.11.1/files/styles
 
     export default function () {
+      const theme = defineProp('theme', { default: 'atom-one-dark' });
       const element = getElement();
-      const source = defineProp("source");
-      const language = defineProp("language");
-      const preview = templateRef("preview");
+      const source = defineProp('source', { default: element.innerHTML.trim() });
+      const language = defineProp('language', { default: 'javascript' });
+      const preview = templateRef('preview');
 
-      function update(language, src) {
-        if (language === "html") {
-          src = src.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+      function update() {
+        const lang = language.value || 'javascript';
+        const src = source.value || '';
+
+        if (lang === 'html') {
+          src = src.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
         }
 
         preview.value.innerHTML =
           hljs.highlight(src, {
-            language,
+            language: lang,
             ignoreIllegals: true,
           }).value || src;
       }
 
-      onInit(function () {
-        update(
-          language.value || "javascript", 
-          source.value || element.innerHTML.trim()
-        );
+      onInit(update);
+      watch(source, update);
+      watch(theme, async () => {
+        const sheet = await loadCss(`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/${theme.value}.min.css`);
+        element.shadowRoot.adoptedStyleSheets = [sheet];
       });
-
-      watch(source, () => update(language.value || "javascript", source.value || ''));
     }
   </script>
 </template>
