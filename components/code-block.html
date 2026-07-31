@@ -37,7 +37,7 @@
       onInit(update);
       watch(source, update);
       watch(theme, async () => {
-        const sheet = await loadCss(`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/${theme.value}.min.css`);
+        const sheet = await loadCss(`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/${theme.value}.min.css`, { adopt: false });
         element.shadowRoot.adoptedStyleSheets = [sheet];
       });
     }
