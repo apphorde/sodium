@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sodium Component Library</title>
-    <script src="https://unpkg.com/@li3/web@latest/loader"></script>
+    <script type="importmap">
+      { "imports": { "@li3/": "https://static.apphor.de/@li3/" } }
+    </script>
+    <script>
+      import '@li3/web';
+    </script>
   </head>
   <body>
     <h1>Sodium Components Library</h1>
