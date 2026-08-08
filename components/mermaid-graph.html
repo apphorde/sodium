@@ -1,17 +1,23 @@
-<template component="mermaid-chart" shadow-dom="open">
-  <script setup="">
-    import { onInit, getElement } from "@li3/web";
-    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/";
+<template component="mermaid-graph">
+  <script setup>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    import { effect, getElement, defineProp } from '@li3/web';
 
     export default function () {
-      mermaid.initialize({ startOnLoad: true });
+      mermaid.initialize({ startOnLoad: false, theme: 'default' });
+      
+      const container = getElement();
+      const input = defineProp('input', { default: '' });
+      const type = defineProp('type', { default: 'renderedGraph' });
 
-      const element = getElement();
-      onInit(function () {
-        mermaid.run({ nodes: [element] });
+      effect(() => input.value + type.value, async () => {
+        try {
+          const { svg } = await mermaid.render(type.value, input.value);
+          container.innerHTML = svg;
+        } catch (err) {
+          container.innerHTML = `<p style="color:red">Failed to render graph: ${err.message}</p>`;
+        }
       });
     }
   </script>
-
-  <div></div>
 </template>
