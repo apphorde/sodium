@@ -12,12 +12,19 @@
     </script>
   </head>
   <body>
+    <template app>
+      <script setup>
+        import {ref} from '@li3/web'
+        export default function() {
+          return { src: ref(document.body.innerHTML) }
+        }
+      </script>
     <h1>Sodium Components Library</h1>
 
     <section>
       <h2>code-block</h2>
       <link rel="component" href="/code-block.html" />
-      <code-block language="html" bind-source="document.body.innerHTML"></code-block>
+      <code-block language="html" bind-source="src"></code-block>
       <code-block language="javascript" theme="androidstudio">console.log('hi')</code-block>
       <code-block language="css" source=".class { display: block }"></code-block>
     </section>
@@ -31,6 +38,7 @@
         value="export default function() {
           console.log('Hello world!')
         }"
+        bind-value="src"
       ></code-editor>
     </section>
 
@@ -39,5 +47,6 @@
       <link rel="component" href="/lucide-icon.html" />
       <lucide-icon size="64" icon="user"></lucide-icon>
     </section>
+    </template>
   </body>
 </html>
