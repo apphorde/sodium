@@ -50,6 +50,8 @@ export default function () {
   const cursor = templateRef("cursor").value;
   const lineNumbers = templateRef("lines").value;
 
+  lineNumbers.onpointerdown = () => sourceRef.focus();
+
   function onSetLanguage() {
     const v = prompt("language", language.value) || "";
     language.value = v.trim();
