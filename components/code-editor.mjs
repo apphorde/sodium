@@ -6,6 +6,8 @@ import {
   defineProp,
   onUpdate as onUpdateProp,
   onInit,
+  getElement,
+  loadCss,
 } from "@li3/web";
 
 const NEWLINE = "\n";
@@ -33,12 +35,14 @@ function findIndentation(string) {
 }
 
 export default function () {
+  const element = getElement();
   defineProp("name");
   defineProp('status');
   const valueProp = defineProp("value");
   const language = defineProp("language");
   const nostatus = defineProp("nostatus");
   const nolines = defineProp("nolines");
+  const theme = defineProp('theme', { default: 'atom-one-dark' });
   const readonly = defineProp("readonly");
   const onChange = defineEvent("change");
   const preview = templateRef("preview").value;
@@ -256,6 +260,12 @@ export default function () {
   onInit(syncEditor);
 
   watch(language, updatePreview);
+  watch(theme, async () => {
+        const sheet = await loadCss(`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/${theme.value}.min.css`, {
+          adopt: false,
+        });
+        element.shadowRoot.adoptedStyleSheets = [sheet];
+      });
 
   return {
     valueProp,
