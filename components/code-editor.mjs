@@ -1,6 +1,7 @@
 import hljs from 'https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js';
 import {
   watch,
+  ref,
   templateRef,
   defineEvent,
   defineProp,
