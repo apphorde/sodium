@@ -289,6 +289,7 @@ export default function () {
 
   return {
     valueProp,
+    caretColor,
     onSourceChange,
     onSetLanguage,
     syncScroll,
