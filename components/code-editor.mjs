@@ -1,4 +1,4 @@
-import hljs from "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js";
+import hljs from 'https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js';
 import {
   watch,
   templateRef,
@@ -8,11 +8,11 @@ import {
   onInit,
   getElement,
   loadCss,
-} from "@li3/web";
+} from '@li3/web';
 
-const NEWLINE = "\n";
-const SPACE = " ";
-const SPACES = "  ";
+const NEWLINE = '\n';
+const SPACE = ' ';
+const SPACES = '  ';
 
 function debounce(fn, time = 200) {
   let t = 0;
@@ -36,24 +36,24 @@ function findIndentation(string) {
 
 export default function () {
   const element = getElement();
-  defineProp("name");
+  defineProp('name');
   defineProp('status');
-  const valueProp = defineProp("value");
-  const language = defineProp("language");
-  const nostatus = defineProp("nostatus");
-  const nolines = defineProp("nolines");
+  const valueProp = defineProp('value');
+  const language = defineProp('language');
+  const nostatus = defineProp('nostatus');
+  const nolines = defineProp('nolines');
   const theme = defineProp('theme', { default: 'atom-one-dark' });
-  const readonly = defineProp("readonly");
-  const onChange = defineEvent("change");
-  const preview = templateRef("preview").value;
-  const sourceRef = templateRef("sourceRef").value;
-  const cursor = templateRef("cursor").value;
-  const lineNumbers = templateRef("lines").value;
+  const readonly = defineProp('readonly');
+  const onChange = defineEvent('change');
+  const preview = templateRef('preview').value;
+  const sourceRef = templateRef('sourceRef').value;
+  const cursor = templateRef('cursor').value;
+  const lineNumbers = templateRef('lines').value;
 
   lineNumbers.onpointerdown = () => sourceRef.focus();
 
   function onSetLanguage() {
-    const v = prompt("language", language.value) || "";
+    const v = prompt('language', language.value) || '';
     language.value = v.trim();
   }
 
@@ -75,10 +75,10 @@ export default function () {
     language.value = hl.language;
 
     lineNumbers.innerHTML = nolines.value
-      ? ""
+      ? ''
       : Array(countChars(code, NEWLINE) || 1)
-          .fill("<span></span>")
-          .join("");
+          .fill('<span></span>')
+          .join('');
 
     updatePosition();
   }
@@ -141,9 +141,7 @@ export default function () {
     const afterBlock = code.slice(end);
     const selection = code.slice(start, end);
     const lines = selection.split(NEWLINE);
-    const modifiedBlock = lines
-      .map((line) => (shiftKey ? line.replace(SPACES, "") : SPACES + line))
-      .join(NEWLINE);
+    const modifiedBlock = lines.map((line) => (shiftKey ? line.replace(SPACES, '') : SPACES + line)).join(NEWLINE);
 
     setSource(beforeBlock + modifiedBlock + afterBlock);
     updateSelection(start, start + modifiedBlock.length);
@@ -158,12 +156,10 @@ export default function () {
     const left = code.slice(0, start);
     const right = code.slice(end);
     const lines = right.split(NEWLINE);
-    const line = lines.shift() || "";
-    const updatedLine = shiftKey ? line.replace(SPACES, "") : SPACES + line;
+    const line = lines.shift() || '';
+    const updatedLine = shiftKey ? line.replace(SPACES, '') : SPACES + line;
     const newSource = left + [updatedLine, ...lines].join(NEWLINE);
-    const cursorPosition = shiftKey
-      ? start - SPACES.length
-      : start + SPACES.length;
+    const cursorPosition = shiftKey ? start - SPACES.length : start + SPACES.length;
 
     setSource(newSource);
     updateSelection(cursorPosition, cursorPosition);
@@ -203,7 +199,7 @@ export default function () {
 
     const line = code.slice(lineStart + 1, position);
     const indentation = findIndentation(line);
-    let insertion = "\n";
+    let insertion = '\n';
 
     if (indentation) {
       insertion += SPACE.repeat(indentation);
@@ -215,12 +211,12 @@ export default function () {
   function onKeyEvent(event) {
     const { target } = event;
 
-    if (event.key === "Tab" && !event.altKey) {
+    if (event.key === 'Tab' && !event.altKey) {
       event.preventDefault();
       onTab(event);
     }
 
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       if (target.selectionEnd === target.selectionStart) {
         event.preventDefault();
         onEnter(event);
@@ -263,11 +259,12 @@ export default function () {
 
   watch(language, updatePreview);
   watch(theme, async () => {
-        const sheet = await loadCss(`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/${theme.value}.min.css`, {
-          adopt: false,
-        });
-        element.shadowRoot.adoptedStyleSheets = [sheet];
-      });
+    const sheet = await loadCss(`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/${theme.value}.min.css`, {
+      adopt: false,
+    });
+    sheet.theme = true;
+    element.shadowRoot.adoptedStyleSheets = element.shadowRoot.adoptedStyleSheets.map((s) => (s.theme ? sheet : s));
+  });
 
   return {
     valueProp,

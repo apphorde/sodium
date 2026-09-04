@@ -1,20 +1,33 @@
 <template shadow-dom="open" component="code-editor">
-  <div class="flex flex-col expand">
-    <div class="position" class-hidden="!!nostatus">
-      <span class="editor-status" class-hidden="!status">{{ status }}</span>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+  <div class="flex flex-col w-full h-full">
+    <div
+      class="flex justify-between gap-2 h-8 p-1 text-xs text-right border-t border-gray-200 bg-gray-100 bg-opacity-40"
+      class-hidden="!!nostatus"
+    >
+      <span
+        class="p-1 text-xs font-bold leading-3 whitespace-nowrap overflow-hidden overflow-ellipsis"
+        class-hidden="!status"
+      >
+        {{ status }}
+      </span>
       <div>
         <span ref="cursor"></span>
         <button on-click="onSetLanguage()">{{ language || 'auto' }}</button>
       </div>
     </div>
-    <div class="flex editor-container">
+
+    <div class="flex w-full flex-1 min-h-0">
       <div
-        class="monospace line-numbers"
+        class="line-numbers font-mono text-xs py-2 px-1 text-right bg-gray-100 opacity-50 select-none overflow-hidden"
         class-hidden="!!nolines"
         ref="lines"
       ></div>
-      <div class="editor-area expand">
-        <div class="layer preview monospace" ref="preview"></div>
+      <div class="relative w-full h-full overflow-auto">
+        <div
+          class="absolute inset-0 z-10 font-mono text-xs py-2 px-1 whitespace-pre overflow-hidden"
+          ref="preview"
+        ></div>
         <textarea
           autocorrect="off"
           autocapitalize="off"
@@ -28,7 +41,8 @@
           on-keyup="updatePosition()"
           on-select="updatePosition()"
           on-scroll="syncScroll($event)"
-          class="layer source monospace"
+          class="absolute inset-0 z-20 font-mono text-xs py-2 px-1 bg-transparent text-transparent border-none resize-none whitespace-nowrap overflow-auto outline-none"
+          style="caret-color: black"
           ref="sourceRef"
         ></textarea>
       </div>
@@ -36,77 +50,8 @@
   </div>
 
   <style>
-    *,
-    ::after,
-    ::before {
-      box-sizing: border-box;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .flex-col {
-      flex-direction: column;
-    }
-
-    .editor-container {
-      width: 100%;
-      height: calc(100% - 30px);
-    }
-
-    .editor-status {
-      font-size: 0.75rem;
-      line-height: 0.75rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-weight: bold;
-      padding: 0.25rem;
-    }
-
-    .position {
-      border-top: 1px solid rgba(229, 231, 235, 1);
-      background-color: rgba(243, 244, 246, 0.4);
-      padding: 0.25rem;
-      font-size: 0.75rem;
-      line-height: 1rem;
-      text-align: right;
-      display: flex;
-      gap: 0.5rem;
-      justify-content: space-between;
-      height: 30px;
-    }
-
-    .flex {
-      display: flex;
-    }
-
-    .editor-area {
-      position: relative;
-      overflow: auto;
-    }
-
-    .expand {
-      width: 100%;
-      height: 100%;
-    }
-
-    .monospace {
-      font-family: monospace;
-      line-height: 1rem;
-      font-size: 0.75rem;
-      letter-spacing: 0px;
-      padding: 0.5rem 0.25rem;
-    }
-
     .line-numbers {
       counter-reset: line;
-      text-align: right;
-      opacity: 0.5;
-      background-color: #f0f0f0;
-      user-select: none;
-      overflow: hidden;
     }
 
     .line-numbers span {
@@ -119,32 +64,7 @@
     .line-numbers span::before {
       content: counter(line);
     }
-
-    .layer {
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      left: 0px;
-      bottom: 0px;
-    }
-
-    .preview {
-      z-index: 2;
-      white-space: pre;
-      overflow: hidden;
-    }
-
-    .source {
-      z-index: 3;
-      caret-color: black;
-      background: transparent;
-      color: transparent;
-      overflow: auto;
-      white-space: nowrap;
-      resize: none;
-      border: none;
-    }
   </style>
 
-  <script setup="" src="./code-editor.mjs"></script>
+  <script setup src="./code-editor.mjs"></script>
 </template>
