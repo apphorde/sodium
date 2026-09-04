@@ -263,7 +263,7 @@ export default function () {
       adopt: false,
     });
     sheet.theme = true;
-    element.shadowRoot.adoptedStyleSheets = element.shadowRoot.adoptedStyleSheets.map((s) => (s.theme ? sheet : s));
+    element.shadowRoot.adoptedStyleSheets = element.shadowRoot.adoptedStyleSheets.filter((s) => !s.theme).concat(sheet);
   });
 
   return {
