@@ -49,8 +49,28 @@ export default function () {
   const sourceRef = templateRef('sourceRef').value;
   const cursor = templateRef('cursor').value;
   const lineNumbers = templateRef('lines').value;
+  const caretColor = ref('black');
 
-  lineNumbers.onpointerdown = () => sourceRef.focus();
+  /**
+   * Calculates the optimal contrasting color (black or white)
+   * based on background color of code preview, using the YIQ formula
+   */
+  function computeCaretColor() {
+    const bgColor = window.getComputedStyle(preview).backgroundColor;
+    const rgbValues = bgColor.match(/\d+/g);
+
+    if (!rgbValues || rgbValues.length < 3) {
+      return black;
+    }
+
+    const r = parseInt(rgbValues[0], 10);
+    const g = parseInt(rgbValues[1], 10);
+    const b = parseInt(rgbValues[2], 10);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+    // 4. Set caret color based on the threshold (128 is the middle of 0-255)
+    element.style.caretColor = brightness >= 128 ? 'black' : 'white';
+  }
 
   function onSetLanguage() {
     const v = prompt('language', language.value) || '';
@@ -264,6 +284,7 @@ export default function () {
     });
     sheet.theme = true;
     element.shadowRoot.adoptedStyleSheets = element.shadowRoot.adoptedStyleSheets.filter((s) => !s.theme).concat(sheet);
+    caretColor.value = computeCaretColor();
   });
 
   return {
