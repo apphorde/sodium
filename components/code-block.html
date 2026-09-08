@@ -1,5 +1,5 @@
 <template shadow-dom="open" component="code-block">
-  <code attr-lang="language" ref="preview" class="hljs"></code>
+  <code attr-lang="language" ref="preview" class="hljs" style-display="display"></code>
 
   <script setup="" lang="ts">
     import { templateRef, defineProp, onInit, getElement, watch, loadCss } from '@li3/web';
@@ -14,6 +14,7 @@
       const source = defineProp('source', { default: element.innerHTML.trim() });
       const language = defineProp('language', { default: 'javascript' });
       const preview = templateRef('preview');
+      const display = element.hasAttribute('inline') ? '' : 'block';
 
       function update() {
         const lang = language.value || 'javascript';
@@ -38,6 +39,8 @@
         });
         element.shadowRoot.adoptedStyleSheets = [sheet];
       });
+
+      return { display }
     }
   </script>
 </template>
