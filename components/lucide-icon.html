@@ -2,22 +2,14 @@
   <span ref="svg" attr-aria-label="label || ''"></span>
 
   <script setup>
-    import {
-      computed,
-      effect,
-      templateRef,
-      shallowRef,
-      watch,
-      defineProp,
-    } from "@li3/web";
+    import { computed, effect, templateRef, shallowRef, watch, defineProp } from '@li3/web';
 
     const cache = {};
     let ce;
 
     export async function createElement(name) {
       if (!ce) {
-        const mod =
-          await import("https://unpkg.com/lucide@latest/dist/esm/createElement.mjs");
+        const mod = await import('https://unpkg.com/lucide@latest/dist/esm/createElement.mjs');
         ce = mod.default;
       }
 
@@ -26,36 +18,34 @@
 
     export async function loadIcon(name) {
       try {
-        const mod = await import(
-          `https://unpkg.com/lucide@latest/dist/esm/icons/${name}.mjs`
-        );
+        const mod = await import(`https://unpkg.com/lucide@latest/dist/esm/icons/${name}.mjs`);
         const icon = mod.default;
         return createElement(icon);
       } catch {
-        throw new Error("Icon not found: " + name);
+        throw new Error('Icon not found: ' + name);
       }
     }
 
     export default function () {
-      const svg = templateRef("svg").value;
-      const iconClasses = defineProp("iconClasses");
-      const icon = defineProp("icon", { attribute: true });
-      const label = defineProp("label", { attribute: true });
-      const size = defineProp("size", { attribute: true });
+      const svg = templateRef('svg').value;
+      const iconClasses = defineProp('iconClasses');
+      const icon = defineProp('icon', { attribute: true });
+      const label = defineProp('label', { attribute: true });
+      const size = defineProp('size', { attribute: true });
       const iconEl = shallowRef(null);
 
       const updateSizeAndClasses = () => {
         const svgIcon = svg.firstChild;
-        
+
         if (!svgIcon) return;
-        
+
         svgIcon.className.baseVal = iconClasses.value || '';
-        
+
         const s = String(size.value || '');
-        
+
         if (s) {
-          svgIcon.setAttribute("width", s);
-          svgIcon.setAttribute("height", s);
+          svgIcon.setAttribute('width', s);
+          svgIcon.setAttribute('height', s);
         }
       };
 
@@ -63,30 +53,27 @@
         if (!iconEl.value) return;
 
         const svgIcon = iconEl.value.cloneNode(true);
-        
-        svg.innerHTML = "";
+
+        svg.innerHTML = '';
         svg.appendChild(svgIcon);
       });
 
-      effect(() => iconClasses + size, updateSizeAndClasses);
+      effect(() => icon.value + iconClasses.value + size.value, updateSizeAndClasses);
 
-      effect(
-        () => icon,
-        async function update() {
-          if (!icon.value?.trim()) {
-            return;
-          }
+      watch(icon, async function update() {
+        if (!icon.value?.trim()) {
+          svg.innerHTML = '';
+          return;
+        }
 
-          svg.innerHTML = "";
-          const newIcon = String(icon.value);
+        const newIcon = String(icon.value);
 
-          if (!cache[newIcon]) {
-            cache[newIcon] = loadIcon(newIcon);
-          }
+        if (!cache[newIcon]) {
+          cache[newIcon] = loadIcon(newIcon);
+        }
 
-          iconEl.value = await cache[newIcon];
-        },
-      );
+        iconEl.value = await cache[newIcon];
+      });
     }
   </script>
 </template>
