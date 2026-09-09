@@ -37,38 +37,47 @@
     }
 
     export default function () {
-      const svg = templateRef("svg");
-      const icon = defineProp("icon");
+      const svg = templateRef("svg").value;
       const iconClasses = defineProp("iconClasses");
-      const label = defineProp("label");
-      const size = defineProp("size");
+      const icon = defineProp("icon", { attribute: true });
+      const label = defineProp("label", { attribute: true });
+      const size = defineProp("size", { attribute: true });
       const iconEl = shallowRef(null);
 
-      watch(iconEl, () => {
-        if (!iconEl.value) return;
-        const svgIcon = iconEl.value.cloneNode(true);
-        svg.value.innerHTML = "";
-        svg.value.appendChild(svgIcon);
-
-        if (iconClasses.value) {
-          svgIcon.className.baseVal = iconClasses.value;
-        }
-
-        if (size.value) {
-          const s = String(size.value);
+      const updateSizeAndClasses = () => {
+        const svgIcon = svg.firstChild;
+        
+        if (!svgIcon) return;
+        
+        svgIcon.className.baseVal = iconClasses.value || '';
+        
+        const s = String(size.value || '');
+        
+        if (s) {
           svgIcon.setAttribute("width", s);
           svgIcon.setAttribute("height", s);
         }
+      };
+
+      watch(iconEl, () => {
+        if (!iconEl.value) return;
+
+        const svgIcon = iconEl.value.cloneNode(true);
+        
+        svg.innerHTML = "";
+        svg.appendChild(svgIcon);
       });
 
+      effect(() => iconClasses + size, updateSizeAndClasses);
+
       effect(
-        () => svg.value + iconClasses.value + size.value + icon.value,
+        () => icon,
         async function update() {
-          if (!icon.value?.trim() || !svg.value) {
+          if (!icon.value?.trim()) {
             return;
           }
 
-          svg.value.innerHTML = "";
+          svg.innerHTML = "";
           const newIcon = String(icon.value);
 
           if (!cache[newIcon]) {
