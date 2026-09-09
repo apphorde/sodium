@@ -56,6 +56,7 @@
 
         svg.innerHTML = '';
         svg.appendChild(svgIcon);
+        updateSizeAndClasses();
       });
 
       effect(() => icon.value + iconClasses.value + size.value, updateSizeAndClasses);
