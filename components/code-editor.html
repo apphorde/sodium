@@ -1,8 +1,8 @@
 <template shadow-dom="open" component="code-editor">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-  <div class="flex flex-col w-full h-full">
+  <div class="flex flex-col w-full h-full hljs">
     <div
-      class="flex justify-between gap-2 h-8 p-1 text-xs text-right hljs"
+      class="flex justify-between gap-2 h-8 p-1 text-xs text-right"
       class-hidden="!!nostatus"
     >
       <span
@@ -19,13 +19,13 @@
 
     <div class="flex w-full flex-1 min-h-0">
       <div
-        class="line-numbers font-mono text-xs py-2 px-1 text-right select-none overflow-hidden border-r border-gray-600 hljs"
+        class="line-numbers font-mono text-xs py-2 px-1 text-right select-none overflow-hidden border-r border-gray-600"
         class-hidden="!!nolines"
         ref="lines"
       ></div>
       <div class="relative w-full h-full overflow-auto">
         <div
-          class="absolute inset-0 z-10 font-mono text-xs py-2 px-1 whitespace-pre overflow-hidden hljs"
+          class="absolute inset-0 z-10 font-mono text-xs py-2 px-1 whitespace-pre overflow-hidden"
           ref="preview"
         ></div>
         <textarea
@@ -41,9 +41,8 @@
           on-keyup="updatePosition()"
           on-select="updatePosition()"
           on-scroll="syncScroll($event)"
-          class="absolute inset-0 z-20 font-mono text-xs py-2 px-1 bg-transparent text-transparent border-none resize-none whitespace-nowrap overflow-auto outline-none"
-          style-caret-color="caretColor"
-          style="caret-shape: block"
+          class="absolute inset-0 z-20 font-mono text-xs py-2 px-1 border-none resize-none whitespace-nowrap overflow-auto outline-none"
+          style="caret-shape: block; color: transparent; background-color: transparent"
           ref="sourceRef"
         ></textarea>
       </div>
