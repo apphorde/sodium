@@ -2,11 +2,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
   <div class="flex flex-col w-full h-full">
     <div
-      class="flex justify-between gap-2 h-8 p-1 text-xs text-right border-t border-gray-200 bg-gray-100 bg-opacity-40"
+      class="flex justify-between gap-2 h-8 p-1 text-xs text-right border-t"
       class-hidden="!!nostatus"
     >
       <span
-        class="p-1 text-xs font-bold leading-3 whitespace-nowrap overflow-hidden overflow-ellipsis"
+        class="p-1 text-xs font-bold leading-3 whitespace-nowrap overflow-hidden overflow-ellipsis hljs"
         class-hidden="!status"
       >
         {{ status }}
@@ -19,7 +19,7 @@
 
     <div class="flex w-full flex-1 min-h-0">
       <div
-        class="line-numbers font-mono text-xs py-2 px-1 text-right bg-gray-100 opacity-50 select-none overflow-hidden"
+        class="line-numbers font-mono text-xs py-2 px-1 text-right select-none overflow-hidden border-r border-gray-600 hljs"
         class-hidden="!!nolines"
         ref="lines"
       ></div>
@@ -59,7 +59,6 @@
       display: block;
       counter-increment: line;
       padding-right: 0.5rem;
-      color: #888;
     }
 
     .line-numbers span::before {
