@@ -62,12 +62,12 @@
       effect(() => icon.value + iconClasses.value + size.value, updateSizeAndClasses);
 
       watch(icon, async function update() {
-        if (!icon.value?.trim()) {
+        if (icon.value === undefined || typeof icon.value !== 'string') {
           svg.innerHTML = '';
           return;
         }
 
-        const newIcon = String(icon.value);
+        const newIcon = String(icon.value).trim();
 
         if (!cache[newIcon]) {
           cache[newIcon] = loadIcon(newIcon);
