@@ -61,7 +61,7 @@ export default function () {
     const rgbValues = bgColor.match(/\d+/g);
 
     if (!rgbValues || rgbValues.length < 3) {
-      return black;
+      return 'black';
     }
 
     const r = parseInt(rgbValues[0], 10);
