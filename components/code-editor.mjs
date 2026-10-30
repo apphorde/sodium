@@ -1,4 +1,5 @@
-import hljs from 'https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js';
+import hljs from "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/es/highlight.min.js";
+import { autocompleteToken, replaceAutocomplete } from "./composer-autocomplete.mjs";
 import {
   watch,
   ref,
@@ -9,11 +10,11 @@ import {
   onInit,
   getElement,
   loadCss,
-} from '@li3/web';
+} from "@li3/web";
 
-const NEWLINE = '\n';
-const SPACE = ' ';
-const SPACES = '  ';
+const NEWLINE = "\n";
+const SPACE = " ";
+const SPACES = "  ";
 
 function debounce(fn, time = 200) {
   let t = 0;
@@ -28,7 +29,9 @@ function findIndentation(string) {
   let cursor = 0;
 
   while (cursor < string.length) {
-    if (string.charAt(cursor) !== SPACE) break;
+    if (string.charAt(cursor) !== SPACE) {
+      break;
+    }
     cursor++;
   }
 
@@ -37,20 +40,130 @@ function findIndentation(string) {
 
 export default function () {
   const element = getElement();
-  defineProp('name');
-  defineProp('status');
-  const valueProp = defineProp('value');
-  const language = defineProp('language');
-  const nostatus = defineProp('nostatus');
-  const nolines = defineProp('nolines');
-  const theme = defineProp('theme', { default: 'atom-one-dark' });
-  const readonly = defineProp('readonly');
-  const onChange = defineEvent('change');
-  const preview = templateRef('preview').value;
-  const sourceRef = templateRef('sourceRef').value;
-  const cursor = templateRef('cursor').value;
-  const lineNumbers = templateRef('lines').value;
-  const caretColor = ref('black');
+  defineProp("name");
+  defineProp("status");
+  const valueProp = defineProp("value");
+  const language = defineProp("language");
+  const nostatus = defineProp("nostatus");
+  const nolines = defineProp("nolines");
+  const theme = defineProp("theme", { default: "atom-one-dark" });
+  const readonly = defineProp("readonly");
+  const wrap = defineProp("wrap");
+  const autocomplete = defineProp("autocomplete");
+  const label = defineProp("label", { default: "Code editor" });
+  const onChange = defineEvent("change");
+  const preview = templateRef("preview").value;
+  const sourceRef = templateRef("sourceRef").value;
+  const cursor = templateRef("cursor").value;
+  const lineNumbers = templateRef("lines").value;
+  const caretColor = ref("black");
+  const suggestions = document.createElement("div");
+  suggestions.id = "editor-suggestions";
+  suggestions.setAttribute("role", "listbox");
+  suggestions.setAttribute("aria-label", "Suggestions");
+  suggestions.hidden = true;
+  suggestions.className = "editor-suggestions";
+  sourceRef.parentElement.append(suggestions);
+  let requestId = 0;
+  let options = [];
+  let active = 0;
+  let currentToken = null;
+
+  function closeSuggestions() {
+    requestId++;
+    options = [];
+    currentToken = null;
+    suggestions.hidden = true;
+    suggestions.replaceChildren();
+    if (typeof autocomplete.value === "function") {
+      sourceRef.setAttribute("aria-expanded", "false");
+    } else {
+      sourceRef.removeAttribute("aria-expanded");
+    }
+    sourceRef.removeAttribute("aria-activedescendant");
+  }
+
+  function renderSuggestions() {
+    suggestions.replaceChildren();
+    options.forEach((option, index) => {
+      const item = document.createElement("div");
+      item.id = `editor-suggestion-${index}`;
+      item.setAttribute("role", "option");
+      item.setAttribute("aria-selected", String(index === active));
+      item.textContent = option.label;
+      item.addEventListener("mousedown", (event) => event.preventDefault());
+      item.addEventListener("click", () => selectSuggestion(index));
+      suggestions.append(item);
+    });
+    suggestions.hidden = false;
+    sourceRef.setAttribute("aria-expanded", "true");
+    sourceRef.setAttribute("aria-activedescendant", `editor-suggestion-${active}`);
+    suggestions.children[active].scrollIntoView({ block: "nearest" });
+  }
+
+  function selectSuggestion(index) {
+    const token = currentToken;
+    const option = options[index];
+    if (!token || !option || readonly.value) {
+      return;
+    }
+    const value = replaceAutocomplete(sourceRef.value, token, option.value);
+    const position = token.start + option.value.length;
+    sourceRef.value = value;
+    setSource(value);
+    updateSelection(position, position);
+    closeSuggestions();
+    sourceRef.focus();
+    onUpdate();
+  }
+
+  async function updateSuggestions() {
+    closeSuggestions();
+    if (readonly.value || typeof autocomplete.value !== "function") {
+      return;
+    }
+    const token = autocompleteToken(sourceRef.value, sourceRef.selectionStart, sourceRef.selectionEnd);
+    if (!token) {
+      return;
+    }
+    const id = requestId;
+    let result;
+    try {
+      result = await autocomplete.value({ ...token, value: sourceRef.value });
+    } catch {
+      return;
+    }
+    if (id !== requestId || !Array.isArray(result)) {
+      return;
+    }
+    options = result.filter((item) => item && typeof item.label === "string" && typeof item.value === "string");
+    if (!options.length) {
+      return;
+    }
+    currentToken = token;
+    active = 0;
+    renderSuggestions();
+  }
+
+  function syncWrap() {
+    const enabled = !!wrap.value;
+    sourceRef.wrap = enabled ? "soft" : "off";
+    sourceRef.style.whiteSpace = enabled ? "pre-wrap" : "";
+    sourceRef.style.overflowWrap = enabled ? "anywhere" : "";
+    preview.style.whiteSpace = enabled ? "pre-wrap" : "";
+    preview.style.overflowWrap = enabled ? "anywhere" : "";
+    sourceRef.setAttribute("aria-label", label.value || "Code editor");
+    if (typeof autocomplete.value === "function") {
+      sourceRef.setAttribute("role", "combobox");
+      sourceRef.setAttribute("aria-autocomplete", "list");
+      sourceRef.setAttribute("aria-controls", "editor-suggestions");
+    } else {
+      sourceRef.removeAttribute("role");
+      sourceRef.removeAttribute("aria-autocomplete");
+      sourceRef.removeAttribute("aria-controls");
+      sourceRef.removeAttribute("aria-expanded");
+    }
+  }
 
   /**
    * Calculates the optimal contrasting color (black or white)
@@ -61,7 +174,7 @@ export default function () {
     const rgbValues = bgColor.match(/\d+/g);
 
     if (!rgbValues || rgbValues.length < 3) {
-      return black;
+      return "black";
     }
 
     const r = parseInt(rgbValues[0], 10);
@@ -70,11 +183,11 @@ export default function () {
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
 
     // 4. Set caret color based on the threshold (128 is the middle of 0-255)
-    element.style.caretColor = brightness >= 128 ? 'black' : 'white';
+    element.style.caretColor = brightness >= 128 ? "black" : "white";
   }
 
   function onSetLanguage() {
-    const v = prompt('language', language.value) || '';
+    const v = prompt("language", language.value) || "";
     language.value = v.trim();
   }
 
@@ -96,10 +209,10 @@ export default function () {
     language.value = hl.language;
 
     lineNumbers.innerHTML = nolines.value
-      ? ''
+      ? ""
       : Array(countChars(code, NEWLINE) || 1)
-          .fill('<span></span>')
-          .join('');
+          .fill("<span></span>")
+          .join("");
 
     updatePosition();
   }
@@ -110,7 +223,9 @@ export default function () {
     let i = 0;
 
     while (i < max) {
-      if (str[i++] === char) count++;
+      if (str[i++] === char) {
+        count++;
+      }
     }
 
     return count;
@@ -119,16 +234,19 @@ export default function () {
   function insertString(string) {
     const start = sourceRef.selectionStart;
     const position = start + string.length;
-    const code = valueProp.value;
+    const code = sourceRef.value;
     const beforeBlock = code.slice(0, start);
     const afterBlock = code.slice(start);
-    setSource(beforeBlock + string + afterBlock);
+    sourceRef.value = beforeBlock + string + afterBlock;
+    setSource(sourceRef.value);
     updateSelection(position, position);
     onUpdate();
   }
 
   const updatePosition = debounce(function updatePosition() {
-    if (nostatus.value) return;
+    if (nostatus.value) {
+      return;
+    }
 
     let start = sourceRef.selectionStart;
     let end = sourceRef.selectionEnd;
@@ -150,7 +268,7 @@ export default function () {
 
   function moveCodeBlock(event) {
     const { target, shiftKey } = event;
-    const code = valueProp.value;
+    const code = sourceRef.value;
     let start = target.selectionStart;
     const end = target.selectionEnd;
 
@@ -162,34 +280,35 @@ export default function () {
     const afterBlock = code.slice(end);
     const selection = code.slice(start, end);
     const lines = selection.split(NEWLINE);
-    const modifiedBlock = lines.map((line) => (shiftKey ? line.replace(SPACES, '') : SPACES + line)).join(NEWLINE);
+    const modifiedBlock = lines.map((line) => (shiftKey ? line.replace(SPACES, "") : SPACES + line)).join(NEWLINE);
 
-    setSource(beforeBlock + modifiedBlock + afterBlock);
+    sourceRef.value = beforeBlock + modifiedBlock + afterBlock;
+    setSource(sourceRef.value);
     updateSelection(start, start + modifiedBlock.length);
     onUpdate();
   }
 
   function moveCodeLine(event) {
     const { target, shiftKey } = event;
-    const code = valueProp.value;
+    const code = sourceRef.value;
     const start = target.selectionStart;
     const end = target.selectionEnd;
     const left = code.slice(0, start);
     const right = code.slice(end);
     const lines = right.split(NEWLINE);
-    const line = lines.shift() || '';
-    const updatedLine = shiftKey ? line.replace(SPACES, '') : SPACES + line;
+    const line = lines.shift() || "";
+    const updatedLine = shiftKey ? line.replace(SPACES, "") : SPACES + line;
     const newSource = left + [updatedLine, ...lines].join(NEWLINE);
     const cursorPosition = shiftKey ? start - SPACES.length : start + SPACES.length;
 
+    sourceRef.value = newSource;
     setSource(newSource);
     updateSelection(cursorPosition, cursorPosition);
     onUpdate();
   }
 
   function updateSelection(start, end) {
-    sourceRef.selectionEnd = start;
-    sourceRef.selectionStart = end;
+    sourceRef.setSelectionRange(start, end);
   }
 
   function onTab(event) {
@@ -203,7 +322,7 @@ export default function () {
   }
 
   function onEnter() {
-    const code = valueProp.value;
+    const code = sourceRef.value;
     const position = sourceRef.selectionStart;
     const char = code.charAt(position);
 
@@ -220,7 +339,7 @@ export default function () {
 
     const line = code.slice(lineStart + 1, position);
     const indentation = findIndentation(line);
-    let insertion = '\n';
+    let insertion = "\n";
 
     if (indentation) {
       insertion += SPACE.repeat(indentation);
@@ -232,12 +351,39 @@ export default function () {
   function onKeyEvent(event) {
     const { target } = event;
 
-    if (event.key === 'Tab' && !event.altKey) {
+    if (event.isComposing) {
+      return;
+    }
+
+    if (options.length && !event.isComposing) {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        active = (active + (event.key === "ArrowDown" ? 1 : -1) + options.length) % options.length;
+        renderSuggestions();
+        return;
+      }
+      if (
+        (event.key === "Enter" && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey) ||
+        (event.key === "Tab" && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey)
+      ) {
+        event.preventDefault();
+        selectSuggestion(active);
+        return;
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeSuggestions();
+        return;
+      }
+    }
+
+    if (event.key === "Tab" && !event.altKey) {
       event.preventDefault();
       onTab(event);
     }
 
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
+      closeSuggestions();
       if (target.selectionEnd === target.selectionStart) {
         event.preventDefault();
         onEnter(event);
@@ -260,13 +406,28 @@ export default function () {
   }
 
   const onSourceChange = debounce(() => {
-    if (readonly.value) return;
+    if (readonly.value) {
+      return;
+    }
 
     setSource(sourceRef.value);
     onUpdate();
+    updateSuggestions();
   }, 10);
 
+  function onInput() {
+    closeSuggestions();
+    onSourceChange();
+  }
+
+  function onCaretChange() {
+    updatePosition();
+    updateSuggestions();
+  }
+
   function syncEditor() {
+    closeSuggestions();
+    syncWrap();
     if (sourceRef.value !== valueProp.value) {
       sourceRef.value = valueProp.value;
       onUpdate();
@@ -279,6 +440,7 @@ export default function () {
   onInit(syncEditor);
 
   watch(language, updatePreview);
+  watch(wrap, syncWrap);
   watch(theme, async () => {
     const sheet = await loadCss(`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/${theme.value}.min.css`, {
       adopt: false,
@@ -292,6 +454,9 @@ export default function () {
     valueProp,
     caretColor,
     onSourceChange,
+    onInput,
+    onCaretChange,
+    closeSuggestions,
     onSetLanguage,
     syncScroll,
     onKeyEvent,

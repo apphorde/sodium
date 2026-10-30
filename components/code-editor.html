@@ -35,11 +35,12 @@
           spellcheck="false"
           bind-name="name"
           bind-value="valueProp"
-          on-input.stop="onSourceChange()"
+          on-input.stop="onInput()"
           on-change.stop="onSourceChange()"
           on-keydown="onKeyEvent($event)"
           on-keyup="updatePosition()"
-          on-select="updatePosition()"
+          on-select="onCaretChange()"
+          on-blur="closeSuggestions()"
           on-scroll="syncScroll($event)"
           class="absolute inset-0 z-20 font-mono text-xs py-2 px-1 bg-transparent text-transparent border-none resize-none whitespace-nowrap overflow-auto outline-none"
           style-caret-color="caretColor"
@@ -51,6 +52,27 @@
   </div>
 
   <style>
+    .editor-suggestions {
+      position: absolute;
+      z-index: 30;
+      bottom: 0;
+      left: 0;
+      max-height: 12rem;
+      overflow: auto;
+      background: white;
+      color: black;
+      border: 1px solid #aaa;
+    }
+    .editor-suggestions[hidden] {
+      display: none;
+    }
+    .editor-suggestions [role="option"] {
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+    }
+    .editor-suggestions [aria-selected="true"] {
+      background: #dbeafe;
+    }
     .line-numbers {
       counter-reset: line;
     }
